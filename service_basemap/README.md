@@ -26,7 +26,8 @@ If the service has been installed successfully, the URL `http://111.111.111.111`
         <td align="left">apache2.vhosts</td>
         <td align="left">111.111.111.111</td>
         <td align="left">
-            IP address or domain of the tile service, for which virtual host configs should be created.
+            IP address or domain of the tile service, for which virtual host configs should be created. A server can
+            listen to multiple vhosts.
         </td>    
     </tr>
     <tr>
@@ -52,7 +53,7 @@ If the service has been installed successfully, the URL `http://111.111.111.111`
     <tr>
         <td align="left">tileserver_gl.tile_domains</td>
         <td align="left">111.111.111.111</td>
-        <td align="left">Domain / IP address under which the tileserver is publised. Important setting for proper working of the tileservice behind a reverse proxy and load balancer.</td>    
+        <td align="left">Domain / IP address under which the tileserver is publised. Important setting for proper working of the tileservice behind a reverse proxy and load balancer. A tileserver can listen to multiple domains.</td>    
     </tr>
     <tr>
         <td align="left">disk_cache_size</td>
