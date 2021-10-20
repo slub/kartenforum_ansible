@@ -1,0 +1,55 @@
+# Created by jacob.mendt@pikobytes.de on 13.10.21
+#
+# This file is subject to the terms and conditions defined in file
+# "LICENSE", which is part of this source code package
+#
+# Install of apache-http and configure apache as a reverse proxy
+---
+  - name: Upgrade all packages to latest version (dist-upgrade)
+    apt:
+      upgrade: dist
+      update_cache: yes
+    become: yes
+
+  - name: Install apache2
+    apt:
+      name: [apache2]
+    become: yes
+
+  #
+  # Setting up apache and the reverse proxy rules
+  #
+  - name: Enable mod_proxy, mod_proxy_http, mod_headers
+    shell: a2enmod proxy proxy_http headers
+    become: yes
+
+  - name: Remove all apache sites-enabled
+    shell: rm -f /etc/apache2/sites-enabled/*
+    become: yes
+
+  - name: Remove all apache sites-enabled
+    shell: rm -f /etc/apache2/sites-available/*
+    become: yes
+
+  - name: Remove all apache sites-enabled
+    shell: rm -f /var/www/html/*
+    become: yes
+
+  - name: Copy configurations to sites-available
+    template:
+      src: 000-default.conf.j2
+      dest: "/etc/apache2/sites-available/{{ item.name }}.conf"
+    with_items:
+      - "{{ apache2.vhosts }}"
+    become: yes
+
+  - name: Enable apache sites
+    shell:
+      cmd: "a2ensite {{ item.name }}"
+    with_items:
+      - "{{ apache2.vhosts }}"
+    become: yes
+
+  - name: Restart apache2
+    shell: systemctl restart apache2
+    become: yes

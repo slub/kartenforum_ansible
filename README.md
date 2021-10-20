@@ -34,9 +34,18 @@ This repository contains the configuration files and ansible scripts for deployi
         </td>    
     </tr>
     <tr>
-        <td align="left"></td>
-        <td align="left"></td>
-        <td align="left"></td>    
+        <td align="left">service_explore/main.yml</td>
+        <td align="left">Installs a single node elasticsearch instance, with an Apache HTTP server as reverse proxy.</td>
+        <td align="left">
+            <ul>
+                <li>Debian 11</li>
+                <li>SSH-Login for User <code>vk2adm</code> via key file</li>
+                <li>core_setup/main.yml was executed before</li>
+                <li>at least 1 cpu cores</li>
+                <li>at least 2 gb ram</li>
+                <li>at least 2 gb disk space for default configuration</li>
+            </ul>
+        </td>    
     </tr>
   </tbody>
 </table>
