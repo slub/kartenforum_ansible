@@ -31,6 +31,13 @@ If the service has been installed successfully, the URL `http://111.111.111.111`
         </td>    
     </tr>
     <tr>
+        <td align="left">apache2.clear_cache_interval</td>
+        <td align="left">15</td>
+        <td align="left">
+            Interval of cache clean cycles in minutes.
+        </td>    
+    </tr>
+    <tr>
         <td align="left">tileserver_gl.root_dir</td>
         <td align="left">/opt/tileserver</td>
         <td align="left">Root directory of the tileserver, where configuration and mbtiles files should be placed.</td>    

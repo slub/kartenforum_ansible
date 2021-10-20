@@ -58,7 +58,7 @@
   - name: Create a cron job for htcacheclean
     cron:
       name: "Check disk cache"
-      minute: "*/1"
+      minute: "*/{{ apache2.clear_cache_interval }}"
       job: "htcacheclean -p /var/cache/apache2/mod_cache_disk/ -l {{ disk_cache_size }} -n -t "
       user: root
     become: yes

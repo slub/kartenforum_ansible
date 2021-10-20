@@ -12,6 +12,7 @@
       admin_mail: info@pikobytes.de
       vhosts:
         - name: 111.111.111.111
+      clear_cache_interval: 15
     tileserver_gl:
       root_dir: /opt/tileserver
       mbtile: zurich_switzerland.mbtiles
