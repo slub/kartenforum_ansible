@@ -45,6 +45,9 @@ This repository contains the configuration files and ansible scripts for deployi
 
 The Virtual Map Forum consists of a number of different services, which can be dimensioned and configured in different ways. 
 
+![Architecture of the Virtual Map Forum](./architecture.png "Architecture of the Virtual Map Forum")
+
+
 The following dimensioning is recommended as a standard setup.
 
 <table>
@@ -57,7 +60,7 @@ The following dimensioning is recommended as a standard setup.
     </tr>
     <tr>
       <td align="left">
-        internal-tile-{x}.slub-dresden.de
+        single-tile-{x}.slub-dresden.de
       </td>
       <td align="left">Tileserver delivering raster and vector tiles based on an OpenStreetMap dump. In case the server are set behind a load balancer the domains should be used by the load balancer.</td>
       <td align="left">

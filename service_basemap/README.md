@@ -67,3 +67,21 @@ If the service has been installed successfully, the URL `http://111.111.111.111`
     </tr>
   </tbody>
 </table>
+
+### GDPR
+
+The service collects ip adresses through the Apache access log file. This information is only used for debugging reasons and can be deleted via clearing the Apache log files.
+
+### License
+
+##### Fonts 
+
+For information about the license of the contained Fonts have a look at [openmaptiles/fonts](https://github.com/openmaptiles/fonts).
+
+Referenced this source, all fonts are either licensed under OFL or Apache. 
+
+##### Map styles
+
+* [MapTiler Basic](https://github.com/openmaptiles/maptiler-basic-gl-style/blob/master/LICENSE.md): CC-BY 4.0 (Design) and BSD (Code)
+* [OSM Bright](https://github.com/openmaptiles/osm-bright-gl-style/blob/master/LICENSE.md): CC-BY 4.0 (Design) and BSD (Code)
+* [Positron](https://github.com/openmaptiles/positron-gl-style/blob/master/LICENSE.md): CC-BY 4.0 (Design) and BSD (Code)
