@@ -1,0 +1,52 @@
+<VirtualHost {{ item.name }}:80>
+	ServerName {{ item.name }}
+	ServerAdmin {{ apache2.admin_mail }}
+
+    # Enable caching for all requests; cache content on local disk
+    CacheEnable disk /
+    CacheRoot /var/cache/apache2/mod_cache_disk
+
+    # Common caching directives
+    CacheQuickHandler off
+    CacheLock on
+    CacheLockPath /tmp/mod_cache-lock
+    CacheLockMaxAge 5
+    CacheHeader On
+
+    # Cache control
+    CacheIgnoreNoLastMod On
+    CacheIgnoreCacheControl On
+
+    # Unset headers from upstream server
+    Header unset Expires
+    Header unset Cache-Control
+    Header unset Pragma
+
+    # set expiration headers for static content
+    ExpiresActive On
+    ExpiresByType image/png "access plus 1 years"
+
+    ProxyPreserveHost On
+    ProxyRequests Off
+    RequestHeader set "X-Forwarded-Proto" expr=%{REQUEST_SCHEME}
+
+    # ProxyPass to the tile service
+    ProxyPass / http://localhost:8080/
+    ProxyPassReverse / http://localhost:8080/
+
+	# Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
+	# error, crit, alert, emerg.
+	# It is also possible to configure the loglevel for particular
+	# modules, e.g.
+	#LogLevel info ssl:warn
+
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+	# For most configuration files from conf-available/, which are
+	# enabled or disabled at a global level, it is possible to
+	# include a line for only one particular virtual host. For example the
+	# following line enables the CGI configuration for this host only
+	# after it has been globally disabled with "a2disconf".
+	#Include conf-available/serve-cgi-bin.conf
+</VirtualHost>

@@ -1,0 +1,63 @@
+{
+  "options": {
+    "paths": {
+      "root": "/data/",
+      "fonts": "fonts",
+      "sprites": "sprites",
+      "styles": "styles",
+      "mbtiles": ""
+    },
+    "domains": [
+      {% for domain in tileserver_gl.tile_domains %}
+        "{{ domain.name }}"
+        {{ ", " if not loop.last else "" }}
+      {% endfor %}
+    ],
+    "formatQuality": {
+      "jpeg": 80,
+      "webp": 90
+    },
+    "maxScaleFactor": 3,
+    "maxSize": 2048,
+    "pbfAlias": "pbf",
+    "serveAllFonts": false,
+    "serveAllStyles": false,
+    "serveStaticMaps": true,
+    "tileMargin": 0
+  },
+  "styles": {
+    "maptiler-basic": {
+      "style": "maptiler-basic.json",
+      "tilejson": {
+        "type": "overlay",
+        "bounds": {{ tileserver_gl.mbtile_bounds }}
+      }
+    },
+    "maptiler-basic-v2": {
+      "style": "maptiler-basic-v2.json",
+      "tilejson": {
+        "type": "overlay",
+        "bounds": {{ tileserver_gl.mbtile_bounds }}
+      }
+    },
+    "positron": {
+      "style": "positron.json",
+      "tilejson": {
+        "type": "overlay",
+        "bounds": {{ tileserver_gl.mbtile_bounds }}
+      }
+    },
+    "osm-bright": {
+      "style": "osm-bright.json",
+      "tilejson": {
+        "type": "overlay",
+        "bounds": {{ tileserver_gl.mbtile_bounds }}
+      }
+    }
+  },
+  "data": {
+    "v3": {
+      "mbtiles": "{{ tileserver_gl.mbtile }}"
+    }
+  }
+}
