@@ -1,6 +1,6 @@
 # Service basemap
 
-## standalone_basemap.yml
+## main.yml
 
 This ansible playbook creates a tileserver serving basemap tiles. Basically it installs a standalone tile server with initial configuration and an Apache2 HTTP server as a reverse proxy and image cache. It can be run via the following command:
 
