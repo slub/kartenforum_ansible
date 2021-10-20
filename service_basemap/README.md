@@ -4,7 +4,7 @@
 
 This ansible playbook creates a tileserver serving basemap tiles. Basically it installs a standalone tile server with initial configuration and an Apache2 HTTP server as a reverse proxy and image cache. It can be run via the following command:
 
-> ansible-playbook standalone_basemap.yml --key-file "~/path/to/key_file" -i 111.111.111.111,
+> ansible-playbook main.yml --key-file "~/path/to/key_file" -i 111.111.111.111,
 
 If the service has been installed successfully, the URL `http://111.111.111.111` different maps (vector/raster) should be offered.
 

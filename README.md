@@ -20,7 +20,7 @@ This repository contains the configuration files and ansible scripts for deployi
       </td>
     </tr>
     <tr>
-        <td align="left">service_basemap/standalone_basemap.yml</td>
+        <td align="left">service_basemap/main.yml</td>
         <td align="left">Installs a standalone tile server with initial configuration and an Apache2 HTTP server as reverse proxy and image cache.</td>
         <td align="left">
             <ul>
