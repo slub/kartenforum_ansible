@@ -1,6 +1,93 @@
-# Scripts for deploying the Virtual Map Forum 2.0 
+# Ansible-Scripts for the Virtual Map Forum 
+
+The repository contains the Ansible scripts and documentation for the VKF setup without the place name service.
+Scripts for deploying the Virtual Map Forum 2.0 
 
 This repository contains the configuration files and ansible scripts for deploying the different service of the Virtual Map Forum 2.0. 
+
+
+## Architecture
+
+The VKF is designed as Service-oriented architecture. The following figure gives an overview of the basic service setup (without the place name service)
+
+![Architecture of the Virtual Map Forum](./service_architecture.png "Architecture of the Virtual Map Forum")
+
+For the deployment of the services [Ansible scripts](#Ansible) are available. The VKF includes the following services.
+
+#### basemap (Basiskarten)
+
+A tile server for delivering [OpenStreetMap](https://www.openstreetmap.org/) based map tiles. The service supports raster and vector tiles and is based on the [OpenMapTiles](https://openmaptiles.org/) ecosystem.
+
+System requirements:
+* Debian 10
+* 140 GB SSD Storage
+* 2 to 4 vCPU
+* 2 to 4 GB RAM
+* Public network or internal
+
+Redundancy:
+* 2 to 4 systems
+
+Basically, the hardware requirements for delivering raster tiles are higher than for vector tiles, because in the case of raster tiles the server also handles the rendering of the tiles. More redundancy, CPU and RAM increase the performance.
+
+#### load balancer (Load-Balancer)
+
+Distributes requests to the different basemap services according to a defined balancing algorithm. Uses a file cache for caching raster tiles. Should support multiple sub-domains so clients can request map tiles faster.
+
+System requirements:
+* Debian 10
+* 40 GB Storage (Should scale with the cache size)
+* 1 vCPU 
+* 2 GB RAM
+* Public network
+
+#### search index (Such-Index)
+
+Beinhaltet öffentliche Metadaten des VKF für die Recherche von Karten im VKF. Basiert auf [Elasticsearch](https://www.elastic.co/de/elasticsearch/).
+
+System requirements:
+* Debian 10
+* 10 GB Storage
+* 2 vCPU
+* 2 GB RAM
+* Public network
+
+#### maps and images (Bilder & Karten)
+
+The service delivers maps and images. Mainly delivers static content, which is stored in the NFS mount. Uses multiple sub-domains to access the individual image and map services.
+
+System requirements:
+* Debian 10
+* 20 GB Storage
+* 2 vCPU
+* 2 GB RAM
+* Public network
+
+Mounts:
+* NFS-Mount on _vkf-data_ (read-only)
+
+#### georeference (Georeferenzierung)
+
+The service hosts the georeferencing service used by the web application and the daemon that synchronizes the search index entries and the maps and images services. 
+
+System requirements:
+* Debian 10 
+* 40 GB Storage
+* 4 vCPU
+* 4 GB RAM
+* Private network
+
+Mounts:
+* NFS-Mount on _vkf-data_ (read and write)
+
+#### vkf-data (Verzeichnissystem)
+
+The network file system, which contains all image and map data of the vkf.
+
+System requirements:
+* 3.5 TB Storage
+
+## Ansible 
 
 <table>
   <tbody>
@@ -46,62 +133,6 @@ This repository contains the configuration files and ansible scripts for deployi
                 <li>at least 2 gb disk space for default configuration</li>
             </ul>
         </td>    
-    </tr>
-  </tbody>
-</table>
-
-## Recommendation for service dimensioning
-
-The Virtual Map Forum consists of a number of different services, which can be dimensioned and configured in different ways. 
-
-![Architecture of the Virtual Map Forum](./architecture.png "Architecture of the Virtual Map Forum")
-
-
-The following dimensioning is recommended as a standard setup.
-
-<table>
-  <tbody>
-    <tr>
-      <th align="left">Domain / Name</th>
-      <th align="center">Purpose</th>
-      <th align="center">Requirements</th>
-      <th align="right">Redundancy</th>
-    </tr>
-    <tr>
-      <td align="left">
-        single-tile-{x}.slub-dresden.de
-      </td>
-      <td align="left">Tileserver delivering raster and vector tiles based on an OpenStreetMap dump. In case the server are set behind a load balancer the domains should be used by the load balancer.</td>
-      <td align="left">
-        <ul>
-            <li>Debian 11</li>
-            <li>2 cpu cores</li>
-            <li>2 gb ram</li>
-            <li>120 gb disk space</li>
-        </ul>
-      </td>
-      <td align="left">
-        At least 2 server. In case of high parallel load of raster tiles 3 to 4 would be better.
-      </td>
-    </tr>
-    <tr>
-        <td align="left">
-            tile-{1|2|3}.slub-dresden.de}
-        </td>
-        <td align="left">
-            Load balancer based on Apache2 HTTP server. Distributes tile requests across multiple servers.
-        </td>
-        <td align="left">
-        <ul>
-            <li>Debian 11</li>
-            <li>1 cpu cores</li>
-            <li>2 gb ram</li>
-            <li>20 gb disk space</li>
-        </ul>
-        </td>
-        <td align="left">
-            Not necessary.
-        </td>     
     </tr>
   </tbody>
 </table>
