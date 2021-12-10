@@ -1,0 +1,23 @@
+# Created by jacob.mendt@pikobytes.de on 26.10.21
+#
+# This file is subject to the terms and conditions defined in file
+# "LICENSE", which is part of this source code package
+#
+# Installs a PostgreSQL with PostGIS extension
+---
+- name: Install need packages
+  package:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+   - postgresql-13
+   - postgresql-13-postgis-3
+  become: yes
+
+- copy:
+    src: ./files/pg_hba.conf
+    dest: /etc/postgresql/13/main/pg_hba.conf
+  become: yes
+  notify:
+    - restart postgresql

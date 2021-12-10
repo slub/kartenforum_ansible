@@ -1,0 +1,66 @@
+# Created by jacob.mendt@pikobytes.de on 13.10.21
+#
+# This file is subject to the terms and conditions defined in file
+# "LICENSE", which is part of this source code package
+#
+# Installs the geo service on a system.
+---
+- hosts: all
+  vars:
+    certs:
+      root: /etc/certs
+      certificates:
+        - name: kartenforum.slub-dresden.de
+          cert: cert.pem
+          chain: chain.pem
+          key: cert-key.key
+    apache2:
+      admin_mail: info@pikobytes.de
+      cert:
+        cert: /etc/certs/kartenforum.slub-dresden.de/cert.pem
+        chain: /etc/certs/kartenforum.slub-dresden.de/chain.pem
+        key: /etc/certs/kartenforum.slub-dresden.de/cert-key.key
+      vhosts:
+        - geo.kartenforum.slub-dresden.de
+        - sdvvk20rgeo.slub-dresden.de
+      basic_auth: True
+      basic_auth_user: set_your_own_user
+      basic_auth_password: set_your_own_password
+    db:
+      password: set_your_own_password
+      name: vkdb
+      user: vk20
+      restore_database: False
+      dump: vkdb-new.dump
+    service:
+      root_path: /opt/kartenforum_georeference
+      git_repo:
+        url: https://github.com/slub/kartenforum_georeference
+        branch: develop-prerelease
+      use_git_repo: True
+    search:
+      domain: search.kartenforum.slub-dresden.de
+      port: 443
+      ssl: True
+      username: elastic
+      password: set_your_own_password
+    storage:
+      root_path: /srv/vk
+      directories:
+        image_root: /srv/vk/original
+        geo_root: /srv/vk/georef
+        tms_root: /srv/vk/tms
+        tmp_root: /srv/vk/tmp
+        mapfile_root: /srv/vk/map_services
+        mapfile_tmp_root: /srv/vk/map_services_tmp
+        daemon_tmp: /srv/vk/daemon_tmp
+      check_permissions: False
+    backup:
+      data_path: /srv/vk/backup/data
+      script_path: /srv/vk/backup/scripts
+  roles:
+    - postgresql
+    - import-database
+    - georeference
+    - apache-http
+    - backup

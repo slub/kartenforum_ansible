@@ -1,0 +1,179 @@
+# Created by jacob.mendt@pikobytes.de on 26.10.21
+#
+# This file is subject to the terms and conditions defined in file
+# "LICENSE", which is part of this source code package
+#
+# Task installs the georeference services. If there is already a georeference service running the task stops
+# it and reinstall it
+---
+  - name: Make sure the storage directories exists
+    debug:
+      msg: "{{ item }}"
+    with_items:
+      - "{{ storage.directories.values() }}"
+    become: yes
+
+  # At start check if there is already a service running on the system
+  - name: Check if georeference service is running
+    shell: systemctl status georeference.service | grep Active | awk -v N=2 '{print $N}'
+    register: georeference_service_status
+
+  # If a service is running stop it
+  - name: Stop service
+    shell: systemctl stop georeference.service
+    become: yes
+    when: georeference_service_status.stdout == 'active'
+
+  # At start check if there is already a running daemon and stop him
+  - name: Check if there is a running georeference daemon
+    shell: "ps -ef | grep -v grep | grep -w {{ service.root_path }}/georeference/daemon/runner.py | awk '{print $2}'"
+    register: running_daemon
+
+  - name: Kill running daemon process
+    shell: "kill -9 {{ item }}"
+    with_items: "{{ running_daemon.stdout_lines }}"
+
+  # Installs the georeference service.
+  - name: Install need packages
+    package:
+      name: "{{ item }}"
+      state: present
+      update_cache: yes
+    with_items:
+      - python3
+      - python3-dev
+      - python3-virtualenv
+      - python3-psycopg2
+      - python3-numpy-dev
+      - build-essential
+      - libpq-dev
+      - gdal-bin
+      - libgdal-dev
+    become: yes
+
+  - name: Make sure the storage directories exists
+    file:
+      path: "{{ item }}"
+      state: directory
+    with_items:
+      - "{{ storage.directories.values() }}"
+    become: yes
+
+  - name: Check permissions for the storage directories
+    file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      recurse: True
+    with_items:
+      - "{{ storage.directories.values() }}"
+    become: yes
+    when: storage.check_permissions == True
+
+  - name: "Recursively remove directory {{ service.root_path }} if it exists"
+    file:
+      path: "{{ service.root_path }}"
+      state: absent
+    become: yes
+
+  # If not a git repo is used try to upload a local file
+  - name: "Upload repository as tar archive"
+    unarchive:
+      src: ./files/georeference.tar.gz
+      dest: "/home/{{ ansible_user }}/"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+    when: service.use_git_repo == False
+
+  # Use git repository
+  - name: Clone kartenforum_georeference
+    git:
+      repo: "{{ service.git_repo.url }}"
+      dest: "/home/{{ ansible_user }}/kartenforum_georeference"
+      version: "{{ service.git_repo.branch }}"
+      accept_hostkey: yes
+    when: service.use_git_repo == True
+
+  - name: "Copy georeference code to {{ service.root_path }}"
+    copy:
+      src: "/home/{{ ansible_user }}/kartenforum_georeference/"
+      dest: "{{ service.root_path }}"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      remote_src: yes
+    become: yes
+
+  - name: "Remove temporary directory /home/{{ ansible_user }}/kartenforum_georeference"
+    file:
+      path: "/home/{{ ansible_user }}/kartenforum_georeference"
+      state: absent
+
+  - name: Install python virtual env
+    shell: "virtualenv {{ service.root_path }}/python_env"
+
+  - template:
+      src: settings.py.j2
+      dest: "{{ service.root_path }}/georeference/settings.py"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      mode: "u=rw,g=r,o=r"
+
+  - template:
+      src: production.ini.j2
+      dest: /opt/kartenforum_georeference/production.ini
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      mode: "u=rw,g=r,o=r"
+
+  - template:
+      src: georeference.service.j2
+      dest: /etc/systemd/system/georeference.service
+    become: yes
+
+  - name: Create log directory
+    file:
+      path: /var/log/georeference
+      state: directory
+      owner: root
+      group: "{{ ansible_user }}"
+      mode: "u=rwx,g=rwx,o=r"
+      recurse: yes
+    become: yes
+
+  - name: Install production dependencies
+    shell:
+      cmd: "{{ service.root_path }}/python_env/bin/python {{ service.root_path }}/setup.py install"
+      chdir: "{{ service.root_path }}"
+    become: yes
+
+  - name: Enable service
+    shell: systemctl enable georeference.service
+    become: yes
+
+  - name: Start service
+    shell: systemctl start georeference.service
+    become: yes
+
+  # Enable clean up process of temp files
+  - template:
+      src: clear_temp_files.sh.j2
+      dest: "{{ service.root_path }}/clear_temp_files.sh"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      mode: "u=rwx,g=rwx,o=r"
+
+  - name: Enable clear_temp_files.sh as cronjob
+    cron:
+      name: "Clear temporary files"
+      minute: "*/5"
+      job: "{{ service.root_path }}/clear_temp_files.sh"
+
+  # Enable daemon
+  - name: Delete all files within daemon directory
+    shell: "rm -f {{ storage.directories.daemon_tmp }}/*"
+    become: yes
+
+  - name: Start daemon
+    shell: /opt/kartenforum_georeference/python_env/bin/python /opt/kartenforum_georeference/georeference/daemon/runner.py
+

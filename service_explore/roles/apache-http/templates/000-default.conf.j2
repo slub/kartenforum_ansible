@@ -1,5 +1,5 @@
-<VirtualHost {{ item.name }}:80>
-	ServerName {{ item.name }}
+<VirtualHost {{ item }}:80>
+	ServerName {{ item }}
 	ServerAdmin {{ apache2.admin_mail }}
 
     # Deny serving files
@@ -11,6 +11,12 @@
     ProxyRequests off
     ProxyPreserveHost On
     <Location />
+        <IfModule mod_headers.c>
+            Header always set Access-Control-Allow-Headers  "Authorization,X-Requested-With,Accept,X-Auth-Token,Content-Length,Access-Control-Allow-Headers,Content-Type, Origin"
+            Header always set Access-Control-Allow-Origin "*"
+            Header always set Access-Control-Allow-Methods "POST, GET, OPTIONS"
+        </IfModule>
+
         ProxyPass http://localhost:9200/
         ProxyPassReverse http://localhost:9200/
         Order allow,deny

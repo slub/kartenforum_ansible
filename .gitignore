@@ -1,3 +1,11 @@
 # ide settings files
 .idea
 *.iml
+
+# Never track cert information within this repository
+*.pem
+*.key
+CMD_BACKUP.md
+
+# Do not track all sql dump files
+vkdb-new.dump

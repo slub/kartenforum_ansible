@@ -5,9 +5,14 @@
 #
 # Installation and configuration of the elasticsearch
 #  * Ensure java is installed
-#  * Install elasticsearch and add as system service
-#  * Configure default password for user "elastic"
+#  * Installs latest elasticsearch
+#  * Enables elasticsearch as systemctl service
+#  * Sets elasticsearch password
 ---
+  - include_tasks:
+      file: clean-es.yml
+    when: es.always_reset == True
+
   - name: Upgrade all packages to latest version (dist-upgrade)
     apt:
       upgrade: dist
@@ -19,17 +24,33 @@
       name: [openjdk-11-jre-headless, gnupg]
     become: yes
 
+  - name: Flush handlers
+    meta: flush_handlers
+
   - name: Add Elasticsearch apt key
-    apt_key:
+    get_url:
       url: https://packages.elastic.co/GPG-KEY-elasticsearch
-      state: present
+      dest: /usr/share/keyrings/elasticsearch-archive-keyring.asc
     become: yes
 
+  - name: Flush handlers
+    meta: flush_handlers
+
   - name: Add Elasticsearch repository
-    apt_repository:
-      repo: 'deb https://artifacts.elastic.co/packages/7.x/apt stable main'
-      state: present
-      update_cache: yes
+    copy:
+      dest: /etc/apt/sources.list.d/elasticsearch.list
+      content: >
+         deb [arch=amd64 signed-by=/usr/share/keyrings/elasticsearch-archive-keyring.asc] https://artifacts.elastic.co/packages/7.x/apt stable main
+    become: yes
+    notify: update_apt_cache
+
+  - name: Add Elasticsearch to unattended-upgrades
+    copy:
+      dest: /etc/apt/apt.conf.d/90unattended-upgrades-elasticsearch
+      content: |
+         Unattended-Upgrade::Origins-Pattern {
+           "origin=elastic,codename=stable";
+         };
     become: yes
 
   - name: Install Elasticsearch
@@ -55,10 +76,12 @@
     become: yes
 
   - name: Reload systemd
-    shell: sudo /bin/systemctl daemon-reload
+    shell: /bin/systemctl daemon-reload
+    become: yes
 
   - name: Add Elasticsearch to systemd
-    shell: sudo /bin/systemctl enable elasticsearch.service
+    shell: /bin/systemctl enable elasticsearch.service
+    become: yes
 
   # Create Bootstrap User / Password
   - name: Check if bootstrap password is set
@@ -76,4 +99,5 @@
 
   # Start the service
   - name: Start Elasticsearch
-    shell: sudo systemctl start elasticsearch.service
+    shell: systemctl start elasticsearch.service
+    become: yes

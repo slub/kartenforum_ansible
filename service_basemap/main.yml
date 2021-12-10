@@ -8,21 +8,33 @@
 ---
 - hosts: all
   vars:
+    certs:
+      root: /etc/certs
+      certificates:
+        - name: kartenforum.slub-dresden.de
+          cert: cert.pem
+          chain: chain.pem
+          key: cert-key.key
     apache2:
       admin_mail: info@pikobytes.de
+      cert:
+        cert: /etc/certs/kartenforum.slub-dresden.de/cert.pem
+        chain: /etc/certs/kartenforum.slub-dresden.de/chain.pem
+        key: /etc/certs/kartenforum.slub-dresden.de/cert-key.key
       vhosts:
-        - name: 111.111.111.111
-      clear_cache_interval: 15
+        - single-tile-1.kartenforum.slub-dresden.de
+        - sdvvk20rtile01.slub-dresden.de
     tileserver_gl:
       root_dir: /opt/tileserver
-      mbtile: zurich_switzerland.mbtiles
-      mbtile_download_link: https://tile-1.pikobytes.de/zurich_switzerland.mbtiles
-      mbtile_bounds: [8.3613,47.2958,8.6744,47.4854]
+      mbtile: planet_20211030.mbtiles
+      mbtile_download_link:
+        url: https://u279620-sub1.your-storagebox.de/planet_20211030.mbtiles
+        auth_user: u279620-sub1
+        auth_password: IVC3R0QpcYTfKmwc
+      mbtile_bounds: [-180.0,-85.06,180.0,85.06]
       tile_domains:
-        - name: 111.111.111.111
-    disk_cache_size: 10G
-    custom_remote_user: vk2adm
-  remote_user: vk2adm
+        - tile-1.kartenforum.slub-dresden.de
+        - tile-2.kartenforum.slub-dresden.de
   roles:
     - tileserver-gl
     - apache-http

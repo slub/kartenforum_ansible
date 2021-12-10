@@ -3,21 +3,33 @@
 # This file is subject to the terms and conditions defined in file
 # "LICENSE", which is part of this source code package
 #
-# Installs an exploration service which includes an elasticsearch node for searching as well as services for accessing geo
+# Installs an exploration service which includes an test-data node for searching as well as services for accessing geo
 # and raw images
 ---
 - hosts: all
   vars:
+    certs:
+      root: /etc/certs
+      certificates:
+        - name: kartenforum.slub-dresden.de
+          cert: cert.pem
+          chain: chain.pem
+          key: cert-key.key
     apache2:
       admin_mail: info@pikobytes.de
+      cert:
+        cert: /etc/certs/kartenforum.slub-dresden.de/cert.pem
+        chain: /etc/certs/kartenforum.slub-dresden.de/chain.pem
+        key: /etc/certs/kartenforum.slub-dresden.de/cert-key.key
       vhosts:
-        - name: 111.111.111.111
+        - search.kartenforum.slub-dresden.de
+        - sdvvk20ridx.slub-dresden.de
     es:
       es_home: /usr/share/elasticsearch
-      es_api_basic_auth_password: test1234
+      es_api_basic_auth_password: set_your_own_password
       es_api_basic_auth_username: elastic
       memory: 1000M
-  remote_user: vk2adm
+      always_reset: True
   roles:
     - elasticsearch
     - apache-http

@@ -1,0 +1,35 @@
+# Created by jacob.mendt@pikobytes.de on 26.10.21
+#
+# This file is subject to the terms and conditions defined in file
+# "LICENSE", which is part of this source code package
+#
+# Installs a PostgreSQL with PostGIS extension and import the database
+---
+  - template:
+      src: create_user_and_db.sql.j2
+      dest: /home/{{ ansible_user }}/create_user_and_db.sql
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      mode: "u=rw,g=r,o=r"
+    when: db.restore_database == True
+
+  - name: Setup database and db user
+    shell: psql -a -f /home/{{ ansible_user }}/create_user_and_db.sql
+    become: yes
+    become_user: postgres
+    when: db.restore_database == True
+
+  - name: Copy database dump
+    copy:
+      src: "./files/{{ db.dump }}"
+      dest: /home/{{ ansible_user }}/database_dump.sql
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      mode: "u=rw,g=r,o=r"
+    when: db.restore_database == True
+
+  - name: Restore database dump
+    shell: psql {{ db.name }} < /home/{{ ansible_user }}/database_dump.sql
+    become: yes
+    become_user: postgres
+    when: db.restore_database == True

@@ -1,0 +1,39 @@
+# Created by jacob.mendt@pikobytes.de on 13.10.21
+#
+# This file is subject to the terms and conditions defined in file
+# "LICENSE", which is part of this source code package
+---
+- hosts: all
+  vars:
+    root_dir: /srv/vk
+    hosts:
+      - name: tms
+        domain: tms-1.kartenforum.slub-dresden.de
+        dir: tms/
+      - name: tms
+        domain: tms-2.kartenforum.slub-dresden.de
+        dir: tms/
+      - name: wcs
+        domain: wcs.kartenforum.slub-dresden.de
+        dir: map_services/
+      - name: wms
+        domain: wms.kartenforum.slub-dresden.de
+        dir: map_services/
+      - name: wms-transform
+        domain: wms-transform.kartenforum.slub-dresden.de
+        dir: map_services_tmp/
+    certs:
+      root: /etc/certs
+      certificates:
+        - name: kartenforum.slub-dresden.de
+          cert: cert.pem
+          chain: chain.pem
+          key: cert-key.key
+    apache2:
+      admin_mail: info@pikobytes.de
+      cert:
+        cert: /etc/certs/kartenforum.slub-dresden.de/cert.pem
+        chain: /etc/certs/kartenforum.slub-dresden.de/chain.pem
+        key: /etc/certs/kartenforum.slub-dresden.de/cert-key.key
+  roles:
+    - apache-http-mapserver

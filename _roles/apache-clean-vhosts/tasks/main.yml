@@ -1,0 +1,39 @@
+# Created by jacob.mendt@pikobytes.de on 15.12.21
+#
+# This file is subject to the terms and conditions defined in file
+# "LICENSE", which is part of this source code package
+#
+# Expects that apache2.vhosts is sets and checks if there are any vhost configuration existing
+# which should be removed
+---
+  - name: Remove vhosts controlled by this tasks within apache sites-enabled (http)
+    file:
+      path: "/etc/apache2/sites-enabled/{{ item }}.conf"
+      state: absent
+    with_items:
+      - "{{ apache2.vhosts }}"
+    become: yes
+
+  - name: Remove vhosts controlled by this tasks within apache sites-enabled (https)
+    file:
+      path: "/etc/apache2/sites-enabled/{{ item }}-ssl.conf"
+      state: absent
+    with_items:
+      - "{{ apache2.vhosts }}"
+    become: yes
+
+  - name: Remove vhosts controlled by this tasks within apache sites-available (http)
+    file:
+      path: "/etc/apache2/sites-available/{{ item }}.conf"
+      state: absent
+    with_items:
+      - "{{ apache2.vhosts }}"
+    become: yes
+
+  - name: Remove vhosts controlled by this tasks within apache sites-available (http)
+    file:
+      path: "/etc/apache2/sites-available/{{ item }}-ssl.conf"
+      state: absent
+    with_items:
+      - "{{ apache2.vhosts }}"
+    become: yes

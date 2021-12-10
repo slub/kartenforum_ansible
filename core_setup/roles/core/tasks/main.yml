@@ -4,8 +4,8 @@
 # "LICENSE", which is part of this source code package
 #
 # Basic configuration of the core system
-#  * Installof basic dependencies
-#  * Add new ssh user and block root user for ssh
+#  * Install of basic dependencies
+#  * Create new user, copy an ssh key to the remote host and add the user to sudoers
 #  * Set iptables
 ---
   - name: Upgrade all packages to latest version (dist-upgrade)
@@ -28,12 +28,23 @@
       groups: sudo
       append: yes
       shell: /bin/bash
+    become: yes
 
-  - name: Copy authorized_keys
-    shell: "cp -r /root/.ssh /home/{{ custom_remote_user }}"
+  - name: "Set authorized key for user {{ custom_remote_user }}"
+    ansible.posix.authorized_key:
+      user: "{{ custom_remote_user }}"
+      state: present
+      key: '{{ item }}'
+    with_file:
+      - id_rsa_slub.pub
+    become: yes
 
   - name: Set correct ownership for password directory
-    shell: "chown -R {{ custom_remote_user }}:{{ custom_remote_user }} /home/{{ custom_remote_user }}/.ssh"
+    file:
+      path: "/home/{{ custom_remote_user }}/.ssh"
+      owner: "{{ custom_remote_user }}"
+      group: "{{ custom_remote_user }}"
+    become: yes
 
   - name: Replace sudoers
     copy:
@@ -42,16 +53,9 @@
       owner: root
       group: root
       mode: "u=r,g=r"
+    become: yes
 
-  - name: Replace sshd_config
-    template:
-      src: sshd_config.j2
-      dest: /etc/ssh/sshd_config
-      owner: root
-      group: root
-      mode: "u=rw,g=r,o=r"
-
-  - name: Restart ssh service
-    shell: /etc/init.d/ssh restart
-
-  - include_tasks: iptables-basic.yml
+  # Make sure certificates are installed
+  - include_role:
+      name:
+        role: '../_roles/iptables'

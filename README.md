@@ -19,7 +19,7 @@ For the deployment of the services [Ansible scripts](#Ansible) are available. Th
 A tile server for delivering [OpenStreetMap](https://www.openstreetmap.org/) based map tiles. The service supports raster and vector tiles and is based on the [OpenMapTiles](https://openmaptiles.org/) ecosystem.
 
 System requirements:
-* Debian 10
+* Debian 11
 * 140 GB SSD Storage
 * 2 to 4 vCPU
 * 2 to 4 GB RAM
@@ -30,51 +30,51 @@ Redundancy:
 
 Basically, the hardware requirements for delivering raster tiles are higher than for vector tiles, because in the case of raster tiles the server also handles the rendering of the tiles. More redundancy, CPU and RAM increase the performance.
 
-#### load balancer (Load-Balancer)
+#### basemap_balancer (Load-Balancer)
 
 Distributes requests to the different basemap services according to a defined balancing algorithm. Uses a file cache for caching raster tiles. Should support multiple sub-domains so clients can request map tiles faster.
 
 System requirements:
-* Debian 10
+* Debian 11
 * 40 GB Storage (Should scale with the cache size)
 * 1 vCPU 
 * 2 GB RAM
 * Public network
 
-#### search index (Such-Index)
+#### explore (Such-Index)
 
-Beinhaltet öffentliche Metadaten des VKF für die Recherche von Karten im VKF. Basiert auf [Elasticsearch](https://www.elastic.co/de/elasticsearch/).
+Contains the public metadata of the VKF and is used for map search. It is based on [Elasticsearch](https://www.elastic.co/de/elasticsearch/).
 
 System requirements:
-* Debian 10
+* Debian 11
 * 10 GB Storage
 * 2 vCPU
 * 2 GB RAM
 * Public network
 
-#### maps and images (Bilder & Karten)
+#### maps (Bilder & Karten)
 
 The service delivers maps and images. Mainly delivers static content, which is stored in the NFS mount. Uses multiple sub-domains to access the individual image and map services.
 
 System requirements:
-* Debian 10
+* Debian 11
 * 20 GB Storage
-* 2 vCPU
-* 2 GB RAM
+* 4 vCPU
+* 8 GB RAM
 * Public network
 
 Mounts:
 * NFS-Mount on _vkf-data_ (read-only)
 
-#### georeference (Georeferenzierung)
+#### geo (Georeferenzierung)
 
 The service hosts the georeferencing service used by the web application and the daemon that synchronizes the search index entries and the maps and images services. 
 
 System requirements:
-* Debian 10 
+* Debian 101
 * 40 GB Storage
-* 4 vCPU
-* 4 GB RAM
+* 8 vCPU
+* 16 GB RAM
 * Private network
 
 Mounts:
@@ -108,18 +108,26 @@ System requirements:
     </tr>
     <tr>
         <td align="left">service_basemap/main.yml</td>
-        <td align="left">Installs a standalone tile server with initial configuration and an Apache2 HTTP server as reverse proxy and image cache.</td>
+        <td align="left">Installs a standalone tile server with initial configuration and an Apache2 HTTP server as reverse proxy.</td>
         <td align="left">
             <ul>
                 <li>Debian 11</li>
                 <li>SSH-Login for User <code>vk2adm</code> via key file</li>
                 <li>core_setup/main.yml was executed before</li>
-                <li>at least 2 cpu cores</li>
-                <li>at least 2 gb ram</li>
-                <li>at least 40 gb disk space for default configuration</li>
             </ul>
         </td>    
     </tr>
+    <tr>
+        <td align="left">service_basemap_balancer/main.yml</td>
+        <td align="left">Installs an software and apache based load balacner with caching capabilities for image serving.</td>
+        <td align="left">
+            <ul>
+                <li>Debian 11</li>
+                <li>SSH-Login for User <code>vk2adm</code> via key file</li>
+                <li>core_setup/main.yml was executed before</li>
+            </ul>
+        </td>    
+    </tr>    
     <tr>
         <td align="left">service_explore/main.yml</td>
         <td align="left">Installs a single node elasticsearch instance, with an Apache HTTP server as reverse proxy.</td>
@@ -128,11 +136,30 @@ System requirements:
                 <li>Debian 11</li>
                 <li>SSH-Login for User <code>vk2adm</code> via key file</li>
                 <li>core_setup/main.yml was executed before</li>
-                <li>at least 1 cpu cores</li>
-                <li>at least 2 gb ram</li>
-                <li>at least 2 gb disk space for default configuration</li>
             </ul>
         </td>    
     </tr>
+    <tr>
+        <td align="left">service_geo/main.yml</td>
+        <td align="left">Installs the georeference service and daemon together with the database. The georeference service is proxied via an apache2 http reverse proxy.</td>
+        <td align="left">
+            <ul>
+                <li>Debian 11</li>
+                <li>SSH-Login for User <code>vk2adm</code> via key file</li>
+                <li>core_setup/main.yml was executed before</li>
+            </ul>
+        </td>    
+    </tr>    
+    <tr>
+        <td align="left">service_maps/main.yml</td>
+        <td align="left">Installs an apache service for serving files according to the tms protocol and delivering images via mapserver.</td>
+        <td align="left">
+            <ul>
+                <li>Debian 11</li>
+                <li>SSH-Login for User <code>vk2adm</code> via key file</li>
+                <li>core_setup/main.yml was executed before</li>
+            </ul>
+        </td>    
+    </tr>   
   </tbody>
 </table>

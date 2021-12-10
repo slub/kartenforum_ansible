@@ -1,0 +1,11 @@
+#!/bin/bash
+
+MAILTO="alexander.bigga@slub-dresden.de"
+
+# Create database backups
+PGPASSWORD="{{ db.password }}" /usr/bin/pg_dump --inserts --column-inserts -h localhost -U {{ db.user }} {{ db.name }} > {{ backup.data_path }}/{{ db.name }}_last.backup
+PGPASSWORD="{{ db.password }}" /usr/bin/pg_dump --schema-only -h localhost -U {{ db.user }} {{ db.name }} > {{ backup.data_path }}/{{ db.name }}_last.schema
+PGPASSWORD="{{ db.password }}" /usr/bin/pg_dump --inserts --column-inserts -h localhost -U {{ db.user }} {{ db.name }} > {{ backup.data_path }}/{{ db.name }}_$(date +%Y-%m-%d).backup;
+
+# Remove database backups which are older then 14 days
+/usr/bin/find {{ backup.data_path }}/ -type f -mtime +14 | xargs rm

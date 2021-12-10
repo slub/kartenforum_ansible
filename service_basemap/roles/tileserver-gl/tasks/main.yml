@@ -18,9 +18,9 @@
       name: [docker.io, apparmor, python3-docker, build-essential, libcairo2-dev, libprotobuf-dev]
     become: yes
 
-  - name: Make sure user {{ custom_remote_user }} is within docker group
+  - name: Make sure user {{ ansible_user }} is within docker group
     user:
-      name: "{{ custom_remote_user }}"
+      name: "{{ ansible_user }}"
       groups: sudo,docker
       append: yes
     become: yes
@@ -37,13 +37,15 @@
     file:
       path: "{{ tileserver_gl.root_dir }}"
       state: directory
-      owner: "{{ custom_remote_user }}"
-      group: "{{ custom_remote_user }}"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
     become: yes
 
-  - name: Download {{ tileserver_gl.mbtile_download_link }}
+  - name: Download {{ tileserver_gl.mbtile_download_link.url }}
     get_url:
-      url: "{{ tileserver_gl.mbtile_download_link }}"
+      url: "{{ tileserver_gl.mbtile_download_link.url }}"
+      url_username: "{{ tileserver_gl.mbtile_download_link.auth_user }}"
+      url_password: "{{ tileserver_gl.mbtile_download_link.auth_password }}"
       dest: "{{ tileserver_gl.root_dir }}/{{ tileserver_gl.mbtile }}"
 
   - name: Copy config.json.j2
@@ -71,7 +73,7 @@
       src: styles/
       dest: "{{ tileserver_gl.root_dir }}/styles/"
 
-  - name: Remove docker test
+  - name: Remove / Stop running tileserver-gl docker images
     docker_container:
       name: tileserver-gl
       state: absent

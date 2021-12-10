@@ -9,6 +9,5 @@
 - hosts: all
   vars:
     custom_remote_user: vk2adm
-  remote_user: root
   roles:
     - core

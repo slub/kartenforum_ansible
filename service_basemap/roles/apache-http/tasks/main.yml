@@ -4,61 +4,52 @@
 # "LICENSE", which is part of this source code package
 #
 #  * Install of apache-http and configure apache as a reverse proxy
-#  * Install a cronjob for cleaning the cache every minute
 ---
-  - name: Upgrade all packages to latest version (dist-upgrade)
-    apt:
-      upgrade: dist
-      update_cache: yes
-    become: yes
+  # Make sure certificates are installed
+  - include_role:
+      name:
+        role: '../_roles/apache-certs'
 
-  - name: Install apache2
-    apt:
-      name: [apache2]
-    become: yes
+  # Make sure a clean apache http server is installed
+  - include_role:
+      name:
+        role: '../_roles/apache-clean-install'
+
+  # Make sure old vhost configurations are removed
+  - include_role:
+      name:
+        role: '../_roles/apache-clean-vhosts'
 
   #
   # Setting up apache and the reverse proxy rules
   #
-  - name: Enable mod_proxy, mod_proxy_http, mod_headers, mod_cache, mod_cache_disk mod_expires
-    shell: a2enmod proxy proxy_http headers cache cache_disk expires
-    become: yes
-
-  - name: Remove all apache sites-enabled
-    shell: rm -f /etc/apache2/sites-enabled/*
-    become: yes
-
-  - name: Remove all apache sites-enabled
-    shell: rm -f /etc/apache2/sites-available/*
+  - name: Enable mod_proxy, mod_proxy_http, mod_headers, mod_cache, mod_expires, mod_ssl
+    shell: a2enmod proxy proxy_http headers cache expires ssl
     become: yes
 
   - name: Copy configurations to sites-available
     template:
       src: 000-default.conf.j2
-      dest: "/etc/apache2/sites-available/{{ item.name }}.conf"
+      dest: "/etc/apache2/sites-available/{{ item }}.conf"
+    with_items:
+      - "{{ apache2.vhosts }}"
+    become: yes
+
+  - name: Copy configurations to sites-available
+    template:
+      src: 000-default-ssl.conf.j2
+      dest: "/etc/apache2/sites-available/{{ item }}-ssl.conf"
     with_items:
       - "{{ apache2.vhosts }}"
     become: yes
 
   - name: Enable apache sites
     shell:
-      cmd: "a2ensite {{ item.name }}"
+      cmd: "a2ensite {{ item }} {{ item }}-ssl"
     with_items:
       - "{{ apache2.vhosts }}"
     become: yes
 
   - name: Restart apache2
     shell: systemctl restart apache2
-    become: yes
-
-  #
-  # Configure htcacheclean for managing the cache size
-  #
-
-  - name: Create a cron job for htcacheclean
-    cron:
-      name: "Check disk cache"
-      minute: "*/{{ apache2.clear_cache_interval }}"
-      job: "htcacheclean -p /var/cache/apache2/mod_cache_disk/ -l {{ disk_cache_size }} -n -t "
-      user: root
     become: yes

@@ -1,4 +1,4 @@
-# Created by jacob.mendt@pikobytes.de on 13.10.21
+# Created by jacob.mendt@pikobytes.de on 15.12.21
 #
 # This file is subject to the terms and conditions defined in file
 # "LICENSE", which is part of this source code package
@@ -7,10 +7,12 @@
   package:
     name: iptables
     state: latest
+  become: yes
 
 - name: Flush existing firewall rules
   iptables:
     flush: true
+  become: yes
 
 - name: Firewall rule - allow all loopback traffic
   iptables:
@@ -18,18 +20,21 @@
     chain: INPUT
     in_interface: lo
     jump: ACCEPT
+  become: yes
 
 - name: Firewall rule - allow established connections
   iptables:
     chain: INPUT
     ctstate: ESTABLISHED,RELATED
     jump: ACCEPT
+  become: yes
 
 - name: Firewall rule - allow port ping traffic
   iptables:
     chain: INPUT
     jump: ACCEPT
     protocol: icmp
+  become: yes
 
 - name: Firewall rule - allow port 22/SSH traffic
   iptables:
@@ -37,6 +42,7 @@
     destination_port: 22
     jump: ACCEPT
     protocol: tcp
+  become: yes
 
 - name: Firewall rule - allow port 80/HTTP traffic
   iptables:
@@ -44,6 +50,7 @@
     destination_port: 80
     jump: ACCEPT
     protocol: tcp
+  become: yes
 
 - name: Firewall rule - allow port 443/HTTPS traffic
   iptables:
@@ -51,11 +58,13 @@
     destination_port: 443
     jump: ACCEPT
     protocol: tcp
+  become: yes
 
 - name: Firewall rule - drop any traffic without rule
   iptables:
     chain: INPUT
     jump: DROP
+  become: yes
 
 - name: Install `netfilter-persistent` && `iptables-persistent` packages
   package:
@@ -65,6 +74,8 @@
    - iptables-persistent
    - netfilter-persistent
   when: ansible_os_family == "Debian" or ansible_os_family == "Ubuntu"
+  become: yes
 
 - name: save iptables
   shell: netfilter-persistent save
+  become: yes
