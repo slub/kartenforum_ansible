@@ -30,7 +30,7 @@
       - "{{ apache2.vhosts }}"
     become: yes
 
-  - name: Remove vhosts controlled by this tasks within apache sites-available (http)
+  - name: Remove vhosts controlled by this tasks within apache sites-available (https)
     file:
       path: "/etc/apache2/sites-available/{{ item }}-ssl.conf"
       state: absent

@@ -27,7 +27,7 @@
     shell: a2enmod proxy proxy_http headers cache expires ssl
     become: yes
 
-  - name: Copy configurations to sites-available
+  - name: Copy configurations to sites-available (http)
     template:
       src: 000-default.conf.j2
       dest: "/etc/apache2/sites-available/{{ item }}.conf"
@@ -35,7 +35,7 @@
       - "{{ apache2.vhosts }}"
     become: yes
 
-  - name: Copy configurations to sites-available
+  - name: Copy configurations to sites-available (https)
     template:
       src: 000-default-ssl.conf.j2
       dest: "/etc/apache2/sites-available/{{ item }}-ssl.conf"
