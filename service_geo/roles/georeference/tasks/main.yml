@@ -13,25 +13,10 @@
       - "{{ storage.directories.values() }}"
     become: yes
 
-  # At start check if there is already a service running on the system
-  - name: Check if georeference service is running
-    shell: systemctl status georeference.service | grep Active | awk -v N=2 '{print $N}'
-    register: georeference_service_status
-
-  # If a service is running stop it
-  - name: Stop service
-    shell: systemctl stop georeference.service
-    become: yes
-    when: georeference_service_status.stdout == 'active'
-
-  # At start check if there is already a running daemon and stop him
-  - name: Check if there is a running georeference daemon
-    shell: "ps -ef | grep -v grep | grep -w {{ service.root_path }}/georeference/daemon/runner.py | awk '{print $2}'"
-    register: running_daemon
-
-  - name: Kill running daemon process
-    shell: "kill -9 {{ item }}"
-    with_items: "{{ running_daemon.stdout_lines }}"
+  # Stop georeference service and daemon
+  - include_role:
+      name:
+        role: georeference-stop
 
   # Installs the georeference service.
   - name: Install need packages
@@ -143,16 +128,14 @@
 
   - name: Install production dependencies
     shell:
-      cmd: "{{ service.root_path }}/python_env/bin/python {{ service.root_path }}/setup.py install"
+      cmd: "{{ service.root_path }}/python_env/bin/pip install ."
       chdir: "{{ service.root_path }}"
-    become: yes
 
-  - name: Enable service
-    shell: systemctl enable georeference.service
-    become: yes
-
-  - name: Start service
-    shell: systemctl start georeference.service
+  - name: Enable and start georeference.service
+    service:
+      name: georeference.service
+      state: started
+      enabled: yes
     become: yes
 
   # Enable clean up process of temp files

@@ -242,3 +242,7 @@ kill -9
 #### Idempotence of the ansible scripts
 
 The script can be executed several times in a row. However, care should be taken that `db.restore_database==True` resets the database each time and thus existing information in the database can be lost.
+
+#### Resetting the database
+
+If the database is resetted, make also sure that the roles `georeference` is run, which starts the georeference daemon and service again.

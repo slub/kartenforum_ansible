@@ -5,6 +5,13 @@
 #
 # Installs a PostgreSQL with PostGIS extension and import the database
 ---
+  # Stop georeference service and daemon. If both are not stopped it can lead to problems
+  # while importing a new database.
+  - include_role:
+      name:
+        role: georeference-stop
+    when: db.restore_database == True
+
   - template:
       src: create_user_and_db.sql.j2
       dest: /home/{{ ansible_user }}/create_user_and_db.sql
