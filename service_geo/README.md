@@ -103,7 +103,7 @@ In production the service is only requested through a TYPO3 proxy layer. This me
       <td align="left">https://github.com/slub/kartenforum_georeference</td>
       <td align="left">Url to the git repository. Make sure that the git repository is public or that your ssh agent supports `-o ForwardAgent=yes`.</td>
     </tr> 
-        <tr>
+    <tr>
       <td align="left">service.git_repo.branch</td>
       <td align="left">main</td>
       <td align="left">Branch of the git repository to checkout.</td>
@@ -113,6 +113,34 @@ In production the service is only requested through a TYPO3 proxy layer. This me
       <td align="left">True</td>
       <td align="left">If `True` it uses the git repository for code checkout. As an alternative for developing setups, set it to `False` and place the code as an `tar.gz` archive under the path `roles/geoerference/files/georeference.tar.gz`.</td>
     </tr>
+    <tr>
+      <td align="left">service.settings.global_permalink_resolver</td>
+      <td align="left">http://digital.slub-dresden.de</td>
+      <td align="left">Url of the global permalink resolver.</td>
+    </tr>
+    <tr>
+      <td align="left">service.settings.template_links_tms</td>
+      <ul>
+        <li>https://tms-1.kartenforum.slub-dresden.de/%s</li>
+        <li>https://tms-1.kartenforum.slub-dresden.de/%s</li>
+      </ul>
+      <td align="left">Template string which is used from the Python Code to generate the TMS-Links. `%s` is an expression, which can be used from Python to resolve template strings.</td>
+    </tr>   
+    <tr>
+      <td align="left">service.settings.template_link_wms</td>
+      <td align="left">https://wms.kartenforum.slub-dresden.de/map/%s</td>
+      <td align="left">Template string which is used from the Python Code to generate the WMS-Links. `%s` is an expression, which can be used from Python to resolve template strings.</td>
+    </tr>   
+    <tr>
+      <td align="left">service.settings.template_link_wms_transform</td>
+      <td align="left">https://wms-transform.kartenforum.slub-dresden.de/map/%s</td>
+      <td align="left">Template string which is used from the Python Code to generate the temporary WMS-Links. `%s` is an expression, which can be used from Python to resolve template strings.</td>
+    </tr> 
+    <tr>
+      <td align="left">service.settings.template_link_wcs</td>
+      <td align="left">https://wcs.kartenforum.slub-dresden.de/map/%s</td>
+      <td align="left">Template string which is used from the Python Code to generate the WCS-Links. `%s` is an expression, which can be used from Python to resolve template strings.</td>
+    </tr>           
     <tr>
       <td align="left">search.domain</td>
       <td align="left">search.kartenforum.slub-dresden.de</td>

@@ -38,6 +38,14 @@
         url: https://github.com/slub/kartenforum_georeference
         branch: develop-prerelease
       use_git_repo: True
+      settings:
+        global_permalink_resolver: http://digital.slub-dresden.de/
+        template_links_tms:
+          - https://tms-1.kartenforum.slub-dresden.de/%s
+          - https://tms-2.kartenforum.slub-dresden.de/%s
+        template_link_wms: https://wms.kartenforum.slub-dresden.de/map/%s
+        template_link_wms_transform: https://wms-transform.kartenforum.slub-dresden.de/map/%s
+        template_link_wcs: https://wcs.kartenforum.slub-dresden.de/map/%s
     search:
       domain: search.kartenforum.slub-dresden.de
       port: 443
