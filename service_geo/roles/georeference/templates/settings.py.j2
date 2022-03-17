@@ -29,7 +29,7 @@ GLOBAL_PATH_GDALWARP = 'gdalwarp'
 GLOBAL_PATH_GDALADDO = 'gdaladdo'
 
 # Permalink resolver
-GLOBAL_PERMALINK_RESOLVER = 'http://digital.slub-dresden.de/'
+GLOBAL_PERMALINK_RESOLVER = '{{ service.settings.global_permalink_resolver }}/'
 
 # Number of processes used for creating the tms
 GLOBAL_TMS_PROCESSES = 2
@@ -84,8 +84,9 @@ PATH_TMP_TRANSFORMATION_DATA_ROOT = '{{ storage.directories.mapfile_tmp_root }}/
 
 # Georeference TMS Cache url
 TEMPLATE_TMS_URLS = [
-    'https://tms-1.kartenforum.slub-dresden.de/%s',
-    'https://tms-2.kartenforum.slub-dresden.de/%s'
+{% for link in service.settings.template_links_tms %}
+    {{ link }}{{ ", " if not loop.last else "" }}
+{% endfor %}
 ]
 
 #
@@ -105,13 +106,13 @@ SRC_DICT_WKT = {
 #
 
 # Template for the public wms service
-TEMPLATE_PUBLIC_WMS_URL = 'https://wms.kartenforum.slub-dresden.de/map/%s'
+TEMPLATE_PUBLIC_WMS_URL = '{{ service.settings.template_link_wms }}'
 
 # Template for the public wms service
-TEMPLATE_PUBLIC_WCS_URL = 'https://wcs.kartenforum.slub-dresden.de/map/%s'
+TEMPLATE_PUBLIC_WCS_URL = '{{ service.settings.template_link_wcs }}'
 
 # WMS Service default url template
-TEMPLATE_TRANSFORMATION_WMS_URL = 'https://wms-transform.kartenforum.slub-dresden.de/map/%s?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.0.0'
+TEMPLATE_TRANSFORMATION_WMS_URL = '{{ service.settings.template_link_wms_transform }}?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.0.0'
 
 # Template for proper building of ids
 TEMPLATE_OAI_ID = 'oai:de:slub-dresden:vk:id-%s'
