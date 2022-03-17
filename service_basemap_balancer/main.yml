@@ -1,0 +1,26 @@
+- hosts: all
+  vars:
+    certs:
+      root: /etc/certs
+      certificates:
+        - name: kartenforum.slub-dresden.de
+          cert: cert.pem
+          chain: chain.pem
+          key: cert-key.key
+    apache2:
+      admin_mail: info@pikobytes.de
+      cert:
+        cert: /etc/certs/kartenforum.slub-dresden.de/cert.pem
+        chain: /etc/certs/kartenforum.slub-dresden.de/chain.pem
+        key: /etc/certs/kartenforum.slub-dresden.de/cert-key.key
+      vhosts:
+        - tile-1.kartenforum.slub-dresden.de
+        - tile-2.kartenforum.slub-dresden.de
+        - sdvvk20rtlb.slub-dresden.de
+      clear_cache_interval: 30
+      disk_cache_size: 12G
+      proxy_urls:
+        - https://single-tile-1.kartenforum.slub-dresden.de
+        - https://single-tile-2.kartenforum.slub-dresden.de
+  roles:
+    - apache-balancer

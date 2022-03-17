@@ -1,0 +1,68 @@
+# Created by jacob.mendt@pikobytes.de on 13.10.21
+#
+# This file is subject to the terms and conditions defined in file
+# "LICENSE", which is part of this source code package
+#
+# Playbook installs and apache http server and configures it as a load balancer with image caching capabilities.
+---
+  # Make sure certificates are installed
+  - include_role:
+      name:
+        role: '../_roles/apache-certs'
+
+  # Make sure a clean apache http server is installed
+  - include_role:
+      name:
+        role: '../_roles/apache-clean-install'
+
+  # Make sure old vhost configurations are removed
+  - include_role:
+      name:
+        role: '../_roles/apache-clean-vhosts'
+
+  #
+  # Setting up apache and the reverse proxy rules
+  #
+  - name: Enable mod_proxy, mod_proxy_http, mod_headers, mod_proxy_balancer mod_lbmethod_byrequests mod_ssl, mod_cache, mod_cache_disk mod_expires mod_lbmethod_bybusyness
+    shell: a2enmod proxy proxy_http headers proxy_balancer lbmethod_byrequests ssl cache cache_disk expires lbmethod_bybusyness
+    become: yes
+
+  - name: Copy configurations to sites-available (default)
+    template:
+      src: 000-default.conf.j2
+      dest: "/etc/apache2/sites-available/{{ item }}.conf"
+    with_items:
+      - "{{ apache2.vhosts }}"
+    become: yes
+
+  - name: Copy configurations to sites-available (ssl)
+    template:
+      src: 000-default-ssl.conf.j2
+      dest: "/etc/apache2/sites-available/{{ item }}-ssl.conf"
+    with_items:
+      - "{{ apache2.vhosts }}"
+    become: yes
+
+  - name: Enable apache sites
+    shell:
+      cmd: "a2ensite {{ item }} {{ item }}-ssl"
+    with_items:
+      - "{{ apache2.vhosts }}"
+    become: yes
+
+  - name: Restart apache2
+    shell: systemctl restart apache2
+    become: yes
+
+  #
+  # Configure htcacheclean for managing the cache size
+  #
+
+  - name: Create a cron job for htcacheclean
+    cron:
+      name: "Check disk cache"
+      minute: "*/{{ apache2.clear_cache_interval }}"
+      job: "htcacheclean -p /var/cache/apache2/mod_cache_disk/ -l {{ apache2.disk_cache_size }} -n -t "
+      user: root
+    become: yes
+

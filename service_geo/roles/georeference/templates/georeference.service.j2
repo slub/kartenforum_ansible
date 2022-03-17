@@ -1,0 +1,29 @@
+[Unit]
+Description=Georeference Application
+
+# Requirements
+Requires=network.target
+
+# Dependency ordering
+After=network.target
+
+[Service]
+TimeoutStartSec=0
+RestartSec=10
+Restart=always
+
+# Path to the application folder
+WorkingDirectory={{ service.root_path }}
+
+# User which you want to run the service
+User={{ ansible_user }}
+
+KillSignal=SIGQUIT
+Type=notify
+NotifyAccess=all
+
+# your pserve path with ini
+ExecStart={{ service.root_path }}/python_env/bin/uwsgi --ini-paste-logged {{ service.root_path }}/production.ini
+
+[Install]
+WantedBy=multi-user.target

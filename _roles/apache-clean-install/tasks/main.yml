@@ -1,0 +1,44 @@
+# Created by jacob.mendt@pikobytes.de on 13.10.21
+#
+# This file is subject to the terms and conditions defined in file
+# "LICENSE", which is part of this source code package
+#
+# Clean install of an apache2 http server and removing of default vhost configurations and content from /var/www/html
+---
+  - name: Upgrade all packages to latest version (dist-upgrade)
+    apt:
+      upgrade: dist
+      update_cache: yes
+    become: yes
+
+  - name: Install apache2
+    apt:
+      name: [apache2]
+    become: yes
+
+  # remove default pages and assets
+  - name: Remove apache default vhosts within apache sites-enabled
+    file:
+      path: "/etc/apache2/sites-enabled/{{ item }}"
+      state: absent
+    with_items:
+      - 000-default.conf
+      - default-ssl.conf
+    become: yes
+
+  - name: Remove apache default vhosts within apache sites-available
+    file:
+      path: "/etc/apache2/sites-available/{{ item }}"
+      state: absent
+    with_items:
+      - 000-default.conf
+      - default-ssl.conf
+    become: yes
+
+  - name: Remove stand html assets
+    file:
+      path: "/var/www/html/{{ item }}"
+      state: absent
+    with_items:
+      - index.html
+    become: yes

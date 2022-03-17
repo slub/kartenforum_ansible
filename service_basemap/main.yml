@@ -1,0 +1,40 @@
+# Created by jacob.mendt@pikobytes.de on 13.10.21
+#
+# This file is subject to the terms and conditions defined in file
+# "LICENSE", which is part of this source code package
+#
+# Installs a standalone tile server with initial configuration and an Apache2 HTTP server as reverse proxy and
+# an image cache.
+---
+- hosts: all
+  vars:
+    certs:
+      root: /etc/certs
+      certificates:
+        - name: kartenforum.slub-dresden.de
+          cert: cert.pem
+          chain: chain.pem
+          key: cert-key.key
+    apache2:
+      admin_mail: info@pikobytes.de
+      cert:
+        cert: /etc/certs/kartenforum.slub-dresden.de/cert.pem
+        chain: /etc/certs/kartenforum.slub-dresden.de/chain.pem
+        key: /etc/certs/kartenforum.slub-dresden.de/cert-key.key
+      vhosts:
+        - single-tile-1.kartenforum.slub-dresden.de
+        - sdvvk20rtile01.slub-dresden.de
+    tileserver_gl:
+      root_dir: /opt/tileserver
+      mbtile: planet_20211030.mbtiles
+      mbtile_download_link:
+        url: https://u279620-sub1.your-storagebox.de/planet_20211030.mbtiles
+        auth_user: u279620-sub1
+        auth_password: IVC3R0QpcYTfKmwc
+      mbtile_bounds: [-180.0,-85.06,180.0,85.06]
+      tile_domains:
+        - tile-1.kartenforum.slub-dresden.de
+        - tile-2.kartenforum.slub-dresden.de
+  roles:
+    - tileserver-gl
+    - apache-http

@@ -1,0 +1,109 @@
+# Created by jacob.mendt@pikobytes.de on 13.10.21
+#
+# This file is subject to the terms and conditions defined in file
+# "LICENSE", which is part of this source code package
+#
+# Performs the following steps:
+# - Installs apache and mapserver
+# - Configures virtual hosts for file access
+# - Enable ssh
+---
+  # Make sure certificates are installed
+  - include_role:
+      name:
+        role: '../_roles/apache-certs'
+
+  # Make sure a clean apache http server is installed
+  - include_role:
+      name:
+        role: '../_roles/apache-clean-install'
+
+  # Make sure old vhost configurations are removed
+  - name: Remove vhosts controlled by this tasks within apache sites-enabled (http)
+    file:
+      path: "/etc/apache2/sites-enabled/{{ item.domain }}.conf"
+      state: absent
+    with_items:
+      - "{{ hosts }}"
+    become: yes
+
+  - name: Remove vhosts controlled by this tasks within apache sites-enabled (https)
+    file:
+      path: "/etc/apache2/sites-enabled/{{ item.domain }}-ssl.conf"
+      state: absent
+    with_items:
+      - "{{ hosts }}"
+    become: yes
+
+  - name: Remove vhosts controlled by this tasks within apache sites-available (http)
+    file:
+      path: "/etc/apache2/sites-available/{{ item.domain }}.conf"
+      state: absent
+    with_items:
+      - "{{ hosts }}"
+    become: yes
+
+  - name: Remove vhosts controlled by this tasks within apache sites-available (http)
+    file:
+      path: "/etc/apache2/sites-available/{{ item.domain }}-ssl.conf"
+      state: absent
+    with_items:
+      - "{{ hosts }}"
+    become: yes
+
+  # Install mapserver dependencies
+  - name: Install mapserver-bin, cgi-mapserver, gdal-bin, libapache2-mod-fcgid
+    apt:
+      name: [mapserver-bin, cgi-mapserver, gdal-bin, libapache2-mod-fcgid]
+    become: yes
+
+  - name: Enable mod_authnz_fcgi, mod_cgi, mod_headers, mod_rewrite, mod_ssl
+    shell: a2enmod authnz_fcgi cgi headers rewrite ssl
+    become: yes
+
+  - name: Copy configurations to sites-available (only file serving / http)
+    template:
+      src: 000-default.conf.j2
+      dest: "/etc/apache2/sites-available/{{ item.domain }}.conf"
+    when: item.name == 'tms' or item.name == 'zoomify' or item.name == 'thumbnail'
+    with_items:
+      - "{{ hosts }}"
+    become: yes
+
+  - name: Copy configurations to sites-available (only file serving / https)
+    template:
+      src: 000-default-ssl.conf.j2
+      dest: "/etc/apache2/sites-available/{{ item.domain }}-ssl.conf"
+    when: item.name == 'tms' or item.name == 'zoomify' or item.name == 'thumbnail'
+    with_items:
+      - "{{ hosts }}"
+    become: yes
+
+  - name: Copy configurations to sites-available (only mapserver / http)
+    template:
+      src: 000-mapservice.conf.j2
+      dest: "/etc/apache2/sites-available/{{ item.domain }}.conf"
+    when: item.name == 'wms' or item.name == 'wcs' or item.name == 'wms-transform'
+    with_items:
+      - "{{ hosts }}"
+    become: yes
+
+  - name: Copy configurations to sites-available (only mapserver / https)
+    template:
+      src: 000-mapservice-ssl.conf.j2
+      dest: "/etc/apache2/sites-available/{{ item.domain }}-ssl.conf"
+    when: item.name == 'wms' or item.name == 'wcs' or item.name == 'wms-transform'
+    with_items:
+      - "{{ hosts }}"
+    become: yes
+
+  - name: Enable apache sites
+    shell:
+      cmd: "a2ensite {{ item.domain }} {{ item.domain }}-ssl"
+    with_items:
+      - "{{ hosts }}"
+    become: yes
+
+  - name: Restart apache2
+    shell: systemctl restart apache2
+    become: yes

@@ -1,0 +1,59 @@
+# Created by jacob.mendt@pikobytes.de on 13.10.21
+#
+# This file is subject to the terms and conditions defined in file
+# "LICENSE", which is part of this source code package
+#
+# Copies all relevant certificate files to the server and installs them
+---
+  - name: "Create directory {{ certs.root }}"
+    file:
+      path: "{{ certs.root }}"
+      state: directory
+      owner: root
+      group: root
+      mode: "0700"
+    become: yes
+
+  - name: "Create certificates directories"
+    file:
+      path: "{{ certs.root }}/{{ item.name }}"
+      state: directory
+      owner: root
+      group: root
+      mode: "0755"
+    with_items:
+      - "{{ certs.certificates }}"
+    become: yes
+
+  - name: "Copy cert files"
+    copy:
+      src: "{{ item.name }}/{{ item.cert }}"
+      dest: "{{ certs.root }}/{{ item.name }}/{{ item.cert }}"
+      owner: root
+      group: root
+      mode: "u=rwx,g=r,o=r"
+    with_items:
+      - "{{ certs.certificates }}"
+    become: yes
+
+  - name: "Copy chain files"
+    copy:
+      src: "{{ item.name }}/{{ item.chain }}"
+      dest: "{{ certs.root }}/{{ item.name }}/{{ item.chain }}"
+      owner: root
+      group: root
+      mode: "u=rwx,g=r,o=r"
+    with_items:
+      - "{{ certs.certificates }}"
+    become: yes
+
+  - name: "Copy key files"
+    copy:
+      src: "{{ item.name }}/{{ item.key }}"
+      dest: "{{ certs.root }}/{{ item.name }}/{{ item.key }}"
+      owner: root
+      group: root
+      mode: "u=rwx,g=,o="
+    with_items:
+      - "{{ certs.certificates }}"
+    become: yes

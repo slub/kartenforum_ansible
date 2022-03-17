@@ -1,30 +1,6 @@
-<VirtualHost {{ item.name }}:80>
-	ServerName {{ item.name }}
+<VirtualHost {{ item }}:80>
+	ServerName {{ item }}
 	ServerAdmin {{ apache2.admin_mail }}
-
-    # Enable caching for all requests; cache content on local disk
-    CacheEnable disk /
-    CacheRoot /var/cache/apache2/mod_cache_disk
-
-    # Common caching directives
-    CacheQuickHandler off
-    CacheLock on
-    CacheLockPath /tmp/mod_cache-lock
-    CacheLockMaxAge 5
-    CacheHeader On
-
-    # Cache control
-    CacheIgnoreNoLastMod On
-    CacheIgnoreCacheControl On
-
-    # Unset headers from upstream server
-    Header unset Expires
-    Header unset Cache-Control
-    Header unset Pragma
-
-    # set expiration headers for static content
-    ExpiresActive On
-    ExpiresByType image/png "access plus 1 years"
 
     ProxyPreserveHost On
     ProxyRequests Off

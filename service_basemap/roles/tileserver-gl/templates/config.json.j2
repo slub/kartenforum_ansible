@@ -9,7 +9,7 @@
     },
     "domains": [
       {% for domain in tileserver_gl.tile_domains %}
-        "{{ domain.name }}"
+        "{{ domain }}"
         {{ ", " if not loop.last else "" }}
       {% endfor %}
     ],

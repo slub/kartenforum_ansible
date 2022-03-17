@@ -1,0 +1,70 @@
+###
+# app configuration
+# http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/environment.html
+###
+
+[app:main]
+use = egg:georeference
+
+pyramid.reload_templates = false
+pyramid.debug_authorization = false
+pyramid.debug_notfound = false
+pyramid.debug_routematch = false
+pyramid.default_locale_name = en
+pyramid.includes = pyramid_tm
+
+# Configuration of the database engine
+sqlalchemy.url = postgresql+psycopg2://{{ db.user }}:{{ db.password }}@localhost:5432/{{ db.name }}
+
+###
+# wsgi server configuration
+###
+
+[uwsgi]
+socket = /tmp/georeference.sock
+http = 127.0.0.1:6542
+master = true
+http-to = /tmp/georeference.sock
+
+###
+# for more information about the logging configuration have a look at:
+# http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/logging.html
+###
+
+[formatter_generic]
+format = %(asctime)s %(levelname)-5.5s [%(name)s][%(threadName)s] %(message)s
+
+[formatters]
+keys = generic
+
+[handler_filelog]
+class = handlers.RotatingFileHandler
+args = ('/var/log/georeference/georeference-service.log','a')
+level = DEBUG
+formatter = generic
+
+[handler_console]
+class = StreamHandler
+args = (sys.stderr,)
+level = NOTSET
+formatter = generic
+
+[handlers]
+keys = console, filelog
+
+[logger_root]
+level = DEBUG
+handlers = filelog
+
+[logger_georeference]
+level = DEBUG
+handlers = filelog
+qualname = georeference
+
+[logger_sqlalchemy]
+level = INFO
+handlers = filelog
+qualname = sqlalchemy.engine
+
+[loggers]
+keys = root, georeference
