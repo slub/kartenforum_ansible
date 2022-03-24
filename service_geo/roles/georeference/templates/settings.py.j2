@@ -85,7 +85,7 @@ PATH_TMP_TRANSFORMATION_DATA_ROOT = '{{ storage.directories.mapfile_tmp_root }}/
 # Georeference TMS Cache url
 TEMPLATE_TMS_URLS = [
 {% for link in service.settings.template_links_tms %}
-    {{ link }}{{ ", " if not loop.last else "" }}
+    '{{ link }}'{{ ", " if not loop.last else "" }}
 {% endfor %}
 ]
 
