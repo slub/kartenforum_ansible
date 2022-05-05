@@ -21,10 +21,9 @@ sqlalchemy.url = postgresql+psycopg2://{{ db.user }}:{{ db.password }}@localhost
 ###
 
 [uwsgi]
-socket = /tmp/georeference.sock
-http = 127.0.0.1:6542
+socket = :6542
 master = true
-http-to = /tmp/georeference.sock
+protocol = uwsgi
 
 ###
 # for more information about the logging configuration have a look at:

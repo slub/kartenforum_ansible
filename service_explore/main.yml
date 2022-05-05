@@ -22,8 +22,8 @@
         chain: /etc/certs/kartenforum.slub-dresden.de/chain.pem
         key: /etc/certs/kartenforum.slub-dresden.de/cert-key.key
       vhosts:
-        - search.kartenforum.slub-dresden.de
-        - sdvvk20ridx.slub-dresden.de
+        - search.test.kartenforum.slub-dresden.de
+        - sdvvk20testidx.slub-dresden.de
     es:
       es_home: /usr/share/elasticsearch
       es_api_basic_auth_password: set_your_own_password

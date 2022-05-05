@@ -26,11 +26,11 @@
   #
   - name: Install apache2
     apt:
-      name: [python3-passlib, libapache2-mod-wsgi-py3]
+      name: [python3-passlib, libapache2-mod-wsgi-py3, libapache2-mod-proxy-uwsgi ]
     become: yes
 
-  - name: Enable mod_proxy, mod_proxy_http, mod_headers, mod_wsgi, mod_rewrite, mod_ssl
-    shell: a2enmod proxy proxy_http headers wsgi rewrite ssl
+  - name: Enable mod_proxy, mod_proxy_http, mod_headers, mod_proxy_uwsgi, mod_rewrite, mod_ssl
+    shell: a2enmod proxy proxy_http headers rewrite ssl proxy_uwsgi
     become: yes
 
   - name: Create password file
