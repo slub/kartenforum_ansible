@@ -26,7 +26,7 @@
   #
   - name: Install apache2
     apt:
-      name: [python3-passlib, libapache2-mod-wsgi-py3, libapache2-mod-proxy-uwsgi ]
+      name: [python3-passlib, libapache2-mod-proxy-uwsgi ]
     become: yes
 
   - name: Enable mod_proxy, mod_proxy_http, mod_headers, mod_proxy_uwsgi, mod_rewrite, mod_ssl

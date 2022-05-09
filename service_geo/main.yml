@@ -37,15 +37,17 @@
       git_repo:
         url: https://github.com/slub/kartenforum_georeference
         branch: develop-prerelease
-      use_git_repo: False
+      use_git_repo: True
       settings:
         global_permalink_resolver: http://digital.slub-dresden.de/
         template_links_tms:
-          - https://tms-1.kartenforum.slub-dresden.de/%s
-          - https://tms-2.kartenforum.slub-dresden.de/%s
+          - https://tms-1.test.kartenforum.slub-dresden.de/%s
+          - https://tms-2.test.kartenforum.slub-dresden.de/%s
         template_link_wms: https://wms.test.kartenforum.slub-dresden.de/map/%s
         template_link_wms_transform: https://wms-transform.test.kartenforum.slub-dresden.de/map/%s
         template_link_wcs: https://wcs.test.kartenforum.slub-dresden.de/map/%s
+        template_link_thumbnail: https://thumbnail.test.kartenforum.slub-dresden.de/{}
+        template_link_zoomify: https://zoomify.test.kartenforum.slub-dresden.de/{}/ImageProperties.xml
     search:
       domain: search.test.kartenforum.slub-dresden.de
       port: 443
@@ -64,6 +66,7 @@
         daemon_tmp: /srv/vk/daemon_tmp
         thumbnail_root: /srv/vk/thumbnails
         zoomify_root: /srv/vk/zoomify
+        upload_tmp: /srv/vk/upload_tmp
       check_permissions: False
     backup:
       data_path: /srv/vk/backup/data
