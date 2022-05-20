@@ -77,7 +77,7 @@ PATH_TMP_TRANSFORMATION_ROOT = '{{ storage.directories.mapfile_tmp_root }}'
 
 # The data root is used by the mapfile an can be accessed from the PATH_TMP_TRANSFORMATION_ROOT. This is
 # necessary for proper working with the docker setup
-PATH_TMP_TRANSFORMATION_DATA_ROOT = '{{ storage.directories.mapfile_tmp_root }}/%s'
+PATH_TMP_TRANSFORMATION_DATA_ROOT = '{{ storage.directories.mapfile_tmp_root }}/{}'
 
 # Temporary storage for new maps
 PATH_TMP_NEW_MAP_ROOT = '{{ storage.directories.upload_tmp }}'
@@ -136,7 +136,7 @@ TEMPLATE_PUBLIC_THUMBNAIL_URL = '{{ service.settings.template_link_thumbnail }}'
 TEMPLATE_PUBLIC_ZOOMIFY_URL = '{{ service.settings.template_link_zoomify }}'
 
 # Template for proper building of ids
-TEMPLATE_OAI_ID = 'oai:de:slub-dresden:vk:id-%s'
+TEMPLATE_OAI_ID = 'oai:de:slub-dresden:vk:id-{}'
 
 #
 # Settings of the daemon. For more information regarding the supported log level see
