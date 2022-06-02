@@ -26,7 +26,7 @@
         Require valid-user
         {% endif %}
 
-        ProxyPass uwsgi://127.0.01:6542/
+        ProxyPass uwsgi://127.0.0.1:6542/
         ProxyPassReverse uwsgi://127.0.0.1:6542/
         Order allow,deny
         Allow from all
