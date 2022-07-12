@@ -2,11 +2,11 @@
 
 ## main.yml
 
-This ansible playbook installs an apache2 and a mapserver for delivering wms and wcs map services. 
+This ansible playbook installs an apache2 for delivering files according to the tms and zoomify protocol as well as simple thumbnail images. 
 
 The playbook can be run via the following command:
 
-> ansible-playbook service_maps/main.yml --inventory tms-1.test.kartenforum.slub-dresden.de, --key-file "./keyfile" --user user_name
+> ansible-playbook service_tiles/main.yml --inventory wms.test.kartenforum.slub-dresden.de, --key-file "./keyfile" --user user_name
 
 ### Variables
 

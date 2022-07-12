@@ -36,7 +36,7 @@
       root_path: /opt/kartenforum_georeference
       git_repo:
         url: https://github.com/slub/kartenforum_georeference
-        branch: develop-import-api
+        branch: main
       use_git_repo: True
       settings:
         global_permalink_resolver: http://digital.slub-dresden.de/
@@ -63,6 +63,7 @@
         tmp_root: /srv/vk/tmp
         mapfile_root: /srv/vk/map_services
         mapfile_tmp_root: /srv/vk/map_services_tmp
+        mosaic_root: /srv/vk/mosaics
         daemon_tmp: /srv/vk/daemon_tmp
         thumbnail_root: /srv/vk/thumbnails
         zoomify_root: /srv/vk/zoomify
