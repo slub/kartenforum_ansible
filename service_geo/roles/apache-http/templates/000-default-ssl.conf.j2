@@ -27,8 +27,8 @@
             Require valid-user
             {% endif %}
 
-            ProxyPass http://127.0.0.1:6542/
-            ProxyPassReverse http://127.0.0.1:6542/
+            ProxyPass uwsgi://127.0.0.1:6542/
+            ProxyPassReverse uwsgi://127.0.0.1:6542/
             Order allow,deny
             Allow from all
         </Location>
@@ -37,7 +37,7 @@
         # error, crit, alert, emerg.
         # It is also possible to configure the loglevel for particular
         # modules, e.g.
-        #LogLevel info ssl:warn
+        # LogLevel trace4
 
         ErrorLog ${APACHE_LOG_DIR}/error.log
         CustomLog ${APACHE_LOG_DIR}/access.log combined

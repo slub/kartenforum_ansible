@@ -34,12 +34,14 @@
       - libpq-dev
       - gdal-bin
       - libgdal-dev
+      - libvips-tools
     become: yes
 
   - name: Make sure the storage directories exists
     file:
       path: "{{ item }}"
       state: directory
+      owner: "{{ ansible_user }}"
     with_items:
       - "{{ storage.directories.values() }}"
     become: yes

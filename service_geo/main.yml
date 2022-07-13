@@ -21,8 +21,8 @@
         chain: /etc/certs/kartenforum.slub-dresden.de/chain.pem
         key: /etc/certs/kartenforum.slub-dresden.de/cert-key.key
       vhosts:
-        - geo.kartenforum.slub-dresden.de
-        - sdvvk20rgeo.slub-dresden.de
+        - geo.test.kartenforum.slub-dresden.de
+        - sdvvk20testgeo.slub-dresden.de
       basic_auth: True
       basic_auth_user: set_your_own_user
       basic_auth_password: set_your_own_password
@@ -36,18 +36,20 @@
       root_path: /opt/kartenforum_georeference
       git_repo:
         url: https://github.com/slub/kartenforum_georeference
-        branch: develop-prerelease
+        branch: develop-import-api
       use_git_repo: True
       settings:
         global_permalink_resolver: http://digital.slub-dresden.de/
         template_links_tms:
-          - https://tms-1.kartenforum.slub-dresden.de/%s
-          - https://tms-2.kartenforum.slub-dresden.de/%s
-        template_link_wms: https://wms.kartenforum.slub-dresden.de/map/%s
-        template_link_wms_transform: https://wms-transform.kartenforum.slub-dresden.de/map/%s
-        template_link_wcs: https://wcs.kartenforum.slub-dresden.de/map/%s
+          - https://tms-1.test.kartenforum.slub-dresden.de/{}
+          - https://tms-2.test.kartenforum.slub-dresden.de/{}
+        template_link_wms: https://wms.test.kartenforum.slub-dresden.de/map/{}
+        template_link_wms_transform: https://wms-transform.test.kartenforum.slub-dresden.de/map/{}
+        template_link_wcs: https://wcs.test.kartenforum.slub-dresden.de/map/{}
+        template_link_thumbnail: https://thumbnail.test.kartenforum.slub-dresden.de/{}
+        template_link_zoomify: https://zoomify.test.kartenforum.slub-dresden.de/{}/ImageProperties.xml
     search:
-      domain: search.kartenforum.slub-dresden.de
+      domain: search.test.kartenforum.slub-dresden.de
       port: 443
       ssl: True
       username: elastic
@@ -62,6 +64,9 @@
         mapfile_root: /srv/vk/map_services
         mapfile_tmp_root: /srv/vk/map_services_tmp
         daemon_tmp: /srv/vk/daemon_tmp
+        thumbnail_root: /srv/vk/thumbnails
+        zoomify_root: /srv/vk/zoomify
+        upload_tmp: /srv/vk/upload_tmp
       check_permissions: False
     backup:
       data_path: /srv/vk/backup/data

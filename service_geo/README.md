@@ -140,7 +140,17 @@ In production the service is only requested through a TYPO3 proxy layer. This me
       <td align="left">service.settings.template_link_wcs</td>
       <td align="left">https://wcs.kartenforum.slub-dresden.de/map/%s</td>
       <td align="left">Template string which is used from the Python Code to generate the WCS-Links. `%s` is an expression, which can be used from Python to resolve template strings.</td>
-    </tr>           
+    </tr>   
+   <tr>
+      <td align="left">service.settings.template_link_thumbnail</td>
+      <td align="left">https://thumbnail.test.kartenforum.slub-dresden.de/{}</td>
+      <td align="left">Template string which is used from the Python Code to generate the Thumbnail-Links. `{}` is an expression, which can be used from Python to resolve template strings.</td>
+    </tr>   
+   <tr>
+      <td align="left">service.settings.template_link_zoomify</td>
+      <td align="left">https://zoomify.test.kartenforum.slub-dresden.de/{}/ImageProperties.xml</td>
+      <td align="left">Template string which is used from the Python Code to generate the Zoomify-Links. `{}` is an expression, which can be used from Python to resolve template strings.</td>
+    </tr>   
     <tr>
       <td align="left">search.domain</td>
       <td align="left">search.kartenforum.slub-dresden.de</td>
@@ -205,7 +215,22 @@ In production the service is only requested through a TYPO3 proxy layer. This me
       <td align="left">storage.directories.daemon_tmp</td>
       <td align="left">/srv/vk/daemon_tmp</td>
       <td align="left">Directory in which configuration files of the daemon should be placed.</td>
-    </tr>                               
+    </tr>         
+<tr>
+      <td align="left">storage.directories.thumbnail_root</td>
+      <td align="left">/srv/vk/thumbnails</td>
+      <td align="left">Directory in which thumbanils are placed.</td>
+    </tr> 
+<tr>
+      <td align="left">storage.directories.zoomify_root</td>
+      <td align="left">/srv/vk/zoomify</td>
+      <td align="left">Directory in which zoomify tiles are placed.</td>
+    </tr> 
+<tr>
+      <td align="left">storage.directories.upload_tmp</td>
+      <td align="left">/srv/vk/upload_tmp</td>
+      <td align="left">Directory in which the temporary upload files are stored.</td>
+    </tr> 
     <tr>
       <td align="left">storage.check_permission</td>
       <td align="left">False</td>
