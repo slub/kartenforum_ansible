@@ -6,7 +6,7 @@ This ansible playbook installs the [postgresql]() / [postgis]() database, import
 
 The playbook can be run via the following command:
 
-> ansible-playbook service_geo/main.yml --inventory geo.kartenforum.slub-dresden.de, --key-file "~/keyfile" --user user_name
+> ansible-playbook service_geo/main.yml --inventory geo.test.kartenforum.slub-dresden.de, --key-file "~/keyfile" --user user_name
 
 The services writes temporary and permanent georeference data, which it shares with the different services from [service_maps](../service_maps/README.md). It therefor needs write access to the network storage which is mounted by the [service_maps](../service_maps/README.md) machine.
 

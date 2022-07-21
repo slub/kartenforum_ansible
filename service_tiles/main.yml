@@ -7,15 +7,18 @@
   vars:
     root_dir: /srv/vk
     hosts:
-      - name: wcs
-        domain: wcs.test.kartenforum.slub-dresden.de
-        dir: map_services/
-      - name: wms
-        domain: wms.test.kartenforum.slub-dresden.de
-        dir: map_services/
-      - name: wms-transform
-        domain: wms-transform.test.kartenforum.slub-dresden.de
-        dir: map_services_tmp/
+      - name: tms
+        domain: tms-1.test.kartenforum.slub-dresden.de
+        dir: tms/
+      - name: tms
+        domain: tms-2.test.kartenforum.slub-dresden.de
+        dir: tms/
+      - name: thumbnail
+        domain: thumbnail.test.kartenforum.slub-dresden.de
+        dir: thumbnails/
+      - name: zoomify
+        domain: zoomify.test.kartenforum.slub-dresden.de
+        dir: zoomify/
     certs:
       root: /etc/certs
       certificates:

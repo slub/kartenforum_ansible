@@ -12,6 +12,9 @@
           PassEnv MS_MAPFILE
         </Directory>
 
+        # Set CORS header. This is needed for proper support of GetCapabilities requests in web applications
+        Header set Access-Control-Allow-Origin "*"
+
         # Rewrite the url. The RegEx expects a path in the format /map/1231252421?... and transforms it to
         # /usr/lib/cgi-bin/mapserv?map=/path/to/mapfiles/1231252421.map&...
         RewriteEngine on

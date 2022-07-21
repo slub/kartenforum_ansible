@@ -6,7 +6,7 @@ This ansible playbook installs an [elasticsearch](https://www.elastic.co/guide/i
 
 The playbook can be run via the following command:
 
-> ansible-playbook service_explore/main.yml --inventory search.kartenforum.slub-dresden.de, --key-file "~/keyfile" --user user_name
+> ansible-playbook service_explore/main.yml --inventory search.test.kartenforum.slub-dresden.de, --key-file "~/keyfile" --user user_name
 
 ### Variables
 
