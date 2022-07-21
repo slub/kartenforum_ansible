@@ -48,7 +48,7 @@ System requirements:
 * 2 GB RAM
 * Public network
 
-#### [service_tiles](./service_tiles/README.md) 
+### [service_tiles](./service_tiles/README.md) 
 
 The service delivers tiles and images. It delivers static content, which is stored in the NFS mount. Uses multiple sub-domains to access the individual image and tile services.
 
