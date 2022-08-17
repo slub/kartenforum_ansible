@@ -2,11 +2,11 @@
 
 ## main.yml
 
-This ansible playbook installs an apache2 for delivering files according to the tms and zoomify protocol as well as simple thumbnail images. 
+This ansible playbook installs an apache2 for delivering files according to the tms, zoomify and terrain tiles protocol as well as simple thumbnail images. 
 
 The playbook can be run via the following command:
 
-> ansible-playbook service_tiles/main.yml --inventory wms.test.kartenforum.slub-dresden.de, --key-file "./keyfile" --user user_name
+> ansible-playbook service_tiles/main.yml --inventory tms-1.test.kartenforum.slub-dresden.de, --key-file "./keyfile" --user user_name
 
 ### Variables
 
@@ -49,6 +49,7 @@ The playbook can be run via the following command:
                 <li><b>name</b>: Name of the host. (e.g. tms, wcs, wms, wms-transform, ...)</li>
                 <li><b>domain</b>: Domain of the host (e.g. tms-1.kartenforum.slub-dresden.de, ...)</li>
                 <li><b>dir</b>: Data directory to which the server reference. Should be relative to the `root_dir` (e.g. tms/, ...) </li>
+                <li><b>vhost_template</b>: Base name of the vhost template file within the template file directory of the role apache-http-file-serving</li>
             </ul>
         </td>
         <td align="left">Basically it serves an array of `hosts`, for which apache virtualhosts should be configured and which are describing a mapserver or a simple file server.</td>    

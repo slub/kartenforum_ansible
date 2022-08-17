@@ -1,0 +1,46 @@
+<IfModule mod_ssl.c>
+    <VirtualHost {{ item.domain }}:443>
+        ServerName {{ item.domain }}
+        ServerAdmin {{ apache2.admin_mail }}
+        DocumentRoot {{ root_dir }}/{{ item.dir }}
+
+        # Header always set Access-Control-Allow-Headers  "Authorization,X-Requested-With,Accept,X-Auth-Token,Content-Length,Access-Control-Allow-Headers,Content-Type, Origin"
+        Header always set Access-Control-Allow-Origin "*"
+        Header always set Access-Control-Allow-Methods "GET"
+
+        <Directory {{ root_dir }}/{{ item.dir }}layer.json>
+            Options +Indexes
+            AllowOverride None
+            Require all granted
+            AddOutputFilterByType DEFLATE application/json
+        </Directory>
+
+        <Directory {{ root_dir }}/{{ item.dir }}>
+            Options +Indexes
+            AllowOverride None
+            Require all granted
+            AddType application/octet-stream .terrain
+            Header set Content-Encoding "gzip"
+        </Directory>
+
+        # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
+        # error, crit, alert, emerg.
+        # It is also possible to configure the loglevel for particular
+        # modules, e.g.
+        #LogLevel info ssl:warn
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+        # For most configuration files from conf-available/, which are
+        # enabled or disabled at a global level, it is possible to
+        # include a line for only one particular virtual host. For example the
+        # following line enables the CGI configuration for this host only
+        # after it has been globally disabled with "a2disconf".
+        #Include conf-available/serve-cgi-bin.conf
+        SSLCertificateFile {{ apache2.cert.cert }}
+        SSLCertificateKeyFile {{ apache2.cert.key }}
+        SSLCertificateChainFile {{ apache2.cert.chain }}
+        SSLEngine on
+    </VirtualHost>
+</IfModule>

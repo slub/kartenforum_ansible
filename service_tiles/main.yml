@@ -10,15 +10,23 @@
       - name: tms
         domain: tms-1.test.kartenforum.slub-dresden.de
         dir: tms/
+        vhost_template: 000-default
       - name: tms
         domain: tms-2.test.kartenforum.slub-dresden.de
         dir: tms/
+        vhost_template: 000-default
       - name: thumbnail
         domain: thumbnail.test.kartenforum.slub-dresden.de
         dir: thumbnails/
+        vhost_template: 000-default
       - name: zoomify
         domain: zoomify.test.kartenforum.slub-dresden.de
         dir: zoomify/
+        vhost_template: 000-default
+      - name: terrain
+        domain: terrain.test.kartenforum.slub-dresden.de
+        dir: terrain/
+        vhost_template: 000-terrain
     certs:
       root: /etc/certs
       certificates:
@@ -33,4 +41,4 @@
         chain: /etc/certs/kartenforum.slub-dresden.de/chain.pem
         key: /etc/certs/kartenforum.slub-dresden.de/cert-key.key
   roles:
-    - apache-http-mapserver
+    - apache-http-file-serving
