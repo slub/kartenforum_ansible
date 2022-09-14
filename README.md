@@ -1,20 +1,16 @@
 # Ansible-Scripts for the Virtual Map Forum 
 
-The repository contains the Ansible scripts and documentation for the VKF setup without the place name service.
-Scripts for deploying the Virtual Map Forum 2.0 
+This repository contains the configuration files and ansible scripts for deploying the different service of the Virtual Map Forum (VKF). The VKF is designed as a service-oriented architecture with different services and components. The following figure gives an overview about the architecture.
 
-This repository contains the configuration files and ansible scripts for deploying the different service of the Virtual Map Forum 2.0. 
+![Architecture of the Virtual Map Forum](./_files/system-diagram.png "Architecture of the Virtual Map Forum")
 
+> :warning: The figure is currently missing the placename service as well as the TYPO3 setup with the web client. 
 
-## Architecture
+For each service component an [ansible scripts](https://www.ansible.com/)  is available, which describes the system setup.
 
-The VKF is designed as Service-oriented architecture. The following figure gives an overview of the basic service setup (without the place name service)
+## Service overview
 
-![Architecture of the Virtual Map Forum](./service_architecture.png "Architecture of the Virtual Map Forum")
-
-For the deployment of the services [Ansible scripts](#Ansible) are available. The VKF includes the following services.
-
-#### basemap (Basiskarten)
+### [service_basemap](./service_basemap/README.md) 
 
 A tile server for delivering [OpenStreetMap](https://www.openstreetmap.org/) based map tiles. The service supports raster and vector tiles and is based on the [OpenMapTiles](https://openmaptiles.org/) ecosystem.
 
@@ -30,7 +26,7 @@ Redundancy:
 
 Basically, the hardware requirements for delivering raster tiles are higher than for vector tiles, because in the case of raster tiles the server also handles the rendering of the tiles. More redundancy, CPU and RAM increase the performance.
 
-#### basemap_balancer (Load-Balancer)
+### [service_basemap_balancer](./service_basemap_balancer/README.md) 
 
 Distributes requests to the different basemap services according to a defined balancing algorithm. Uses a file cache for caching raster tiles. Should support multiple sub-domains so clients can request map tiles faster.
 
@@ -41,7 +37,7 @@ System requirements:
 * 2 GB RAM
 * Public network
 
-#### explore (Such-Index)
+### [service_explore](./service_basemap_balancer/README.md) 
 
 Contains the public metadata of the VKF and is used for map search. It is based on [Elasticsearch](https://www.elastic.co/de/elasticsearch/).
 
@@ -52,9 +48,23 @@ System requirements:
 * 2 GB RAM
 * Public network
 
-#### maps (Bilder & Karten)
+### [service_tiles](./service_tiles/README.md) 
 
-The service delivers maps and images. Mainly delivers static content, which is stored in the NFS mount. Uses multiple sub-domains to access the individual image and map services.
+The service delivers tiles and images. It delivers static content, which is stored in the NFS mount. Uses multiple sub-domains to access the individual image and tile services.
+
+System requirements:
+* Debian 11
+* 20 GB Storage
+* 1 vCPU
+* 2 GB RAM
+* Public network
+
+Mounts:
+* NFS-Mount on _vkf-data_ (read-only)
+ 
+### [service_maps](./service_maps/README.md) 
+
+The service delivers maps via an UMN mapserver. It uses multiple sub-domains to access the individual map services.
 
 System requirements:
 * Debian 11
@@ -66,7 +76,7 @@ System requirements:
 Mounts:
 * NFS-Mount on _vkf-data_ (read-only)
 
-#### geo (Georeferenzierung)
+### [service_geo](./service_geo/README.md) 
 
 The service hosts the georeferencing service used by the web application and the daemon that synchronizes the search index entries and the maps and images services. 
 
@@ -80,7 +90,7 @@ System requirements:
 Mounts:
 * NFS-Mount on _vkf-data_ (read and write)
 
-#### vkf-data (Verzeichnissystem)
+### vkf-data (Verzeichnissystem)
 
 The network file system, which contains all image and map data of the vkf.
 
@@ -152,7 +162,18 @@ System requirements:
     </tr>    
     <tr>
         <td align="left">service_maps/main.yml</td>
-        <td align="left">Installs an apache service for serving files according to the tms protocol and delivering images via mapserver.</td>
+        <td align="left">Installs an apache service for serving dynamic maps via mapserver.</td>
+        <td align="left">
+            <ul>
+                <li>Debian 11</li>
+                <li>SSH-Login for User <code>vk2adm</code> via key file</li>
+                <li>core_setup/main.yml was executed before</li>
+            </ul>
+        </td>    
+    </tr>   
+    <tr>
+        <td align="left">service_tiles/main.yml</td>
+        <td align="left">Installs an apache service for serving files according to the tms and zoomify protocol as well as thumbnails.</td>
         <td align="left">
             <ul>
                 <li>Debian 11</li>

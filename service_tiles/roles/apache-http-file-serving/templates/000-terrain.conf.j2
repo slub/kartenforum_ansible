@@ -3,32 +3,30 @@
 	ServerAdmin {{ apache2.admin_mail }}
     DocumentRoot {{ root_dir }}/{{ item.dir }}
 
-    ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
-    <Directory "/usr/lib/cgi-bin">
-      SetHandler fcgid-script
-      Options +ExecCGI
-      Require all granted
-      PassEnv MS_MAPFILE
+    # Header always set Access-Control-Allow-Headers  "Authorization,X-Requested-With,Accept,X-Auth-Token,Content-Length,Access-Control-Allow-Headers,Content-Type, Origin"
+    Header always set Access-Control-Allow-Origin "*"
+    Header always set Access-Control-Allow-Methods "GET"
+
+    <Directory {{ root_dir }}/{{ item.dir }}layer.json>
+        Options +Indexes
+        AllowOverride None
+        Require all granted
+        AddOutputFilterByType DEFLATE application/json
     </Directory>
 
-    # Set CORS header. This is needed for proper support of GetCapabilities requests in web applications
-    Header set Access-Control-Allow-Origin "*"
-
-    # Rewrite the url. The RegEx expects a path in the format /map/1231252421?... and transforms it to
-    # /usr/lib/cgi-bin/mapserv?map=/path/to/mapfiles/1231252421.map&...
-    RewriteEngine on
-    {% if 'wms' == item.name or 'wcs' == item.name or 'wms-transform' == item.name %}
-    RewriteRule /map/(\w+)/?$ /usr/lib/cgi-bin/mapserv?map={{ root_dir }}/{{ item.dir }}$1.map& [QSA]
-    {% endif %}
+    <Directory {{ root_dir }}/{{ item.dir }}>
+        Options +Indexes
+        AllowOverride None
+        Require all granted
+        AddType application/octet-stream .terrain
+        Header set Content-Encoding "gzip"
+    </Directory>
 
 	# Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
 	# error, crit, alert, emerg.
 	# It is also possible to configure the loglevel for particular
 	# modules, e.g.
 	#LogLevel info ssl:warn
-
-    # Log entry for testing rewrite rules
-    LogLevel alert rewrite:trace3
 
 	ErrorLog ${APACHE_LOG_DIR}/error.log
 	CustomLog ${APACHE_LOG_DIR}/access.log combined

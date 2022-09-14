@@ -1,0 +1,44 @@
+# Created by jacob.mendt@pikobytes.de on 13.10.21
+#
+# This file is subject to the terms and conditions defined in file
+# "LICENSE", which is part of this source code package
+---
+- hosts: all
+  vars:
+    root_dir: /srv/vk
+    hosts:
+      - name: tms
+        domain: tms-1.test.kartenforum.slub-dresden.de
+        dir: tms/
+        vhost_template: 000-default
+      - name: tms
+        domain: tms-2.test.kartenforum.slub-dresden.de
+        dir: tms/
+        vhost_template: 000-default
+      - name: thumbnail
+        domain: thumbnail.test.kartenforum.slub-dresden.de
+        dir: thumbnails/
+        vhost_template: 000-default
+      - name: zoomify
+        domain: zoomify.test.kartenforum.slub-dresden.de
+        dir: zoomify/
+        vhost_template: 000-default
+      - name: terrain
+        domain: terrain.test.kartenforum.slub-dresden.de
+        dir: terrain/
+        vhost_template: 000-terrain
+    certs:
+      root: /etc/certs
+      certificates:
+        - name: kartenforum.slub-dresden.de
+          cert: cert.pem
+          chain: chain.pem
+          key: cert-key.key
+    apache2:
+      admin_mail: info@pikobytes.de
+      cert:
+        cert: /etc/certs/kartenforum.slub-dresden.de/cert.pem
+        chain: /etc/certs/kartenforum.slub-dresden.de/chain.pem
+        key: /etc/certs/kartenforum.slub-dresden.de/cert-key.key
+  roles:
+    - apache-http-file-serving

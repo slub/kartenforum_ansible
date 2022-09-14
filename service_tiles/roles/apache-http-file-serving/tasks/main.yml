@@ -4,9 +4,8 @@
 # "LICENSE", which is part of this source code package
 #
 # Performs the following steps:
-# - Installs apache and mapserver
+# - Installs apache http server
 # - Configures virtual hosts for file access
-# - Enable ssh
 ---
   # Make sure certificates are installed
   - include_role:
@@ -51,27 +50,21 @@
       - "{{ hosts }}"
     become: yes
 
-  # Install mapserver dependencies
-  - name: Install mapserver-bin, cgi-mapserver, gdal-bin, libapache2-mod-fcgid
-    apt:
-      name: [mapserver-bin, cgi-mapserver, gdal-bin, libapache2-mod-fcgid]
+  - name: Enable  mod_headers, mod_ssl, mod_deflate
+    shell: a2enmod headers ssl deflate
     become: yes
 
-  - name: Enable mod_authnz_fcgi, mod_cgi, mod_headers, mod_rewrite, mod_ssl
-    shell: a2enmod authnz_fcgi cgi headers rewrite ssl
-    become: yes
-
-  - name: Copy configurations to sites-available (only mapserver / http)
+  - name: Copy configurations to sites-available (HTTP / Port:80)
     template:
-      src: 000-mapservice.conf.j2
+      src: "{{ item.vhost_template }}.conf.j2"
       dest: "/etc/apache2/sites-available/{{ item.domain }}.conf"
     with_items:
       - "{{ hosts }}"
     become: yes
 
-  - name: Copy configurations to sites-available (only mapserver / https)
+  - name: Copy configurations to sites-available (HTTPS / Port:443)
     template:
-      src: 000-mapservice-ssl.conf.j2
+      src: "{{ item.vhost_template }}-ssl.conf.j2"
       dest: "/etc/apache2/sites-available/{{ item.domain }}-ssl.conf"
     with_items:
       - "{{ hosts }}"
