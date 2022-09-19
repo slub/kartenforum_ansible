@@ -1,0 +1,19 @@
+# Created by jacob.mendt@pikobytes.de on 19.09.2022
+#
+# This file is subject to the terms and conditions defined in file
+# "LICENSE.md", which is part of this source code package
+version: '3'
+services:
+  nominatim_geocoder:
+    container_name: nominatim_geocoder
+    image: mediagis/nominatim:4.0
+    restart: always
+    shm_size: 2gb
+    environment:
+      - PBF_URL=https://planet.openstreetmap.org/pbf/planet-latest.osm.pbf
+      - FREEZE=true
+      - NOMINATIM_PASSWORD=250be763b7
+    ports:
+      - 8080:8080
+    volumes:
+      - /opt/nominatim/data/pg:/var/lib/postgresql/12/main

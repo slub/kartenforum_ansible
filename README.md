@@ -37,7 +37,7 @@ System requirements:
 * 2 GB RAM
 * Public network
 
-### [service_explore](./service_basemap_balancer/README.md) 
+### [service_explore](./service_explore/README.md) 
 
 Contains the public metadata of the VKF and is used for map search. It is based on [Elasticsearch](https://www.elastic.co/de/elasticsearch/).
 
@@ -75,6 +75,17 @@ System requirements:
 
 Mounts:
 * NFS-Mount on _vkf-data_ (read-only)
+
+### [service_explore](./service_place/README.md) 
+
+Contains the geocoding service of the VKF. It is based on [mediagis/nominatim](https://hub.docker.com/r/mediagis/nominatim).
+
+System requirements:
+* Debian 11
+* 740 GB GB Storage
+* 2 vCPU
+* 4 GB RAM
+* Public network
 
 ### [service_geo](./service_geo/README.md) 
 

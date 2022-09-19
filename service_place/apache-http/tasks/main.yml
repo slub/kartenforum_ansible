@@ -1,0 +1,82 @@
+# Created by jacob.mendt@pikobytes.de on 13.10.21
+#
+# This file is subject to the terms and conditions defined in file
+# "LICENSE", which is part of this source code package
+#
+# Performs the following steps:
+# - Installs apache http server
+# - Configures virtual hosts for file access
+---
+  # Make sure certificates are installed
+  - include_role:
+      name:
+        role: '../_roles/apache-certs'
+
+  # Make sure a clean apache http server is installed
+  - include_role:
+      name:
+        role: '../_roles/apache-clean-install'
+
+  # Make sure old vhost configurations are removed
+  - name: Remove vhosts controlled by this tasks within apache sites-enabled (http)
+    file:
+      path: "/etc/apache2/sites-enabled/{{ item.domain }}.conf"
+      state: absent
+    with_items:
+      - "{{ hosts }}"
+    become: yes
+
+  - name: Remove vhosts controlled by this tasks within apache sites-enabled (https)
+    file:
+      path: "/etc/apache2/sites-enabled/{{ item.domain }}-ssl.conf"
+      state: absent
+    with_items:
+      - "{{ hosts }}"
+    become: yes
+
+  - name: Remove vhosts controlled by this tasks within apache sites-available (http)
+    file:
+      path: "/etc/apache2/sites-available/{{ item.domain }}.conf"
+      state: absent
+    with_items:
+      - "{{ hosts }}"
+    become: yes
+
+  - name: Remove vhosts controlled by this tasks within apache sites-available (http)
+    file:
+      path: "/etc/apache2/sites-available/{{ item.domain }}-ssl.conf"
+      state: absent
+    with_items:
+      - "{{ hosts }}"
+    become: yes
+
+  - name: Enable mod_proxy, mod_proxy_http, mod_headers, mod_ssl, mod_deflate
+    shell: a2enmod proxy proxy_http headers ssl deflate
+    become: yes
+
+  - name: Copy configurations to sites-available (HTTP / Port:80)
+    template:
+      src: "000-default.conf.j2"
+      dest: "/etc/apache2/sites-available/{{ item.domain }}.conf"
+    with_items:
+      - "{{ hosts }}"
+    become: yes
+
+  - name: Copy configurations to sites-available (HTTPS / Port:443)
+    template:
+      src: "000-default-ssl.conf.j2"
+      dest: "/etc/apache2/sites-available/{{ item.domain }}-ssl.conf"
+    with_items:
+      - "{{ hosts }}"
+    become: yes
+
+  - name: Enable apache sites
+    shell:
+      cmd: "a2ensite {{ item.domain }} {{ item.domain }}-ssl"
+    with_items:
+      - "{{ hosts }}"
+    become: yes
+
+  - name: Restart apache2
+    shell: systemctl restart apache2
+    become: yes

@@ -1,26 +1,14 @@
 <VirtualHost {{ item.domain }}:80>
 	ServerName {{ item.domain }}
 	ServerAdmin {{ apache2.admin_mail }}
-    DocumentRoot {{ item.dir }}
 
-    # Header always set Access-Control-Allow-Headers  "Authorization,X-Requested-With,Accept,X-Auth-Token,Content-Length,Access-Control-Allow-Headers,Content-Type, Origin"
-    Header always set Access-Control-Allow-Origin "*"
-    Header always set Access-Control-Allow-Methods "GET"
+    ProxyPreserveHost On
+    ProxyRequests Off
+    RequestHeader set "X-Forwarded-Proto" expr=%{REQUEST_SCHEME}
 
-    <Directory {{ item.dir }}layer.json>
-        Options +Indexes
-        AllowOverride None
-        Require all granted
-        AddOutputFilterByType DEFLATE application/json
-    </Directory>
-
-    <Directory {{ item.dir }}>
-        Options +Indexes
-        AllowOverride None
-        Require all granted
-        AddType application/octet-stream .terrain
-        Header set Content-Encoding "gzip"
-    </Directory>
+    # ProxyPass to the tile service
+    ProxyPass / http://localhost:8080/
+    ProxyPassReverse / http://localhost:8080/
 
 	# Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
 	# error, crit, alert, emerg.

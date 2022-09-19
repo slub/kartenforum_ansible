@@ -1,0 +1,76 @@
+# Created by jacob.mendt@pikobytes.de on 19.09.2022
+#
+# This file is subject to the terms and conditions defined in file
+# "LICENSE", which is part of this source code package
+#
+# Installs a keycloak and starts it on the server as service
+---
+- name: Make sure docker is installed
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+   - docker.io
+   - docker-compose
+   - apparmor
+   - apparmor-utils
+  become: yes
+
+- name: Check if nominatim service exists
+  stat: path="/etc/systemd/system/nominatim.service"
+  register: nominatim_service_status
+
+- name: Stop running nominatim.service
+  systemd:
+    name: nominatim.service
+    state: stopped
+  when: nominatim_service_status.stat.exists
+  become: yes
+
+- name: Create user nominatim
+  user:
+    name: nominatim
+    home: /opt/nominatim
+    append: yes
+    shell: /sbin/nologin
+    system: yes
+  become: yes
+
+- name: Make sure /opt/nominatim exists
+  file:
+    path: "/opt/nominatim"
+    state: directory
+    owner: "nominatim"
+    group: "nominatim"
+  become: yes
+
+- name: Make sure docker-compose.yml exists
+  copy:
+    src: "./files/docker-compose.yml"
+    dest: "/opt/nominatim"
+    owner: "nominatim"
+    group: "nominatim"
+    mode: "u=rw,g=r,o=r"
+  become: yes
+
+- name: Make sure nominatim.service
+  copy:
+    src: "./files/docker-compose.service"
+    dest: "/etc/systemd/system/nominatim.service"
+    owner: "root"
+    group: "root"
+    mode: "u=rwx,g=rx,o=rx"
+  become: yes
+
+- name: Enable nominatim.service
+  systemd:
+    name: nominatim.service
+    enabled: true
+    masked: no
+  become: yes
+
+- name: Start nominatim.service
+  systemd:
+    name: nominatim.service
+    state: started
+  become: yes

@@ -1,13 +1,13 @@
 <VirtualHost {{ item.domain }}:80>
 	ServerName {{ item.domain }}
 	ServerAdmin {{ apache2.admin_mail }}
-    DocumentRoot {{ root_dir }}/{{ item.dir }}
+    DocumentRoot {{ item.dir }}
 
     # Header always set Access-Control-Allow-Headers  "Authorization,X-Requested-With,Accept,X-Auth-Token,Content-Length,Access-Control-Allow-Headers,Content-Type, Origin"
     Header always set Access-Control-Allow-Origin "*"
     Header always set Access-Control-Allow-Methods "GET"
 
-    <Directory {{ root_dir }}/{{ item.dir }}>
+    <Directory {{ item.dir }}>
         Options +Indexes
         AllowOverride None
         Require all granted
