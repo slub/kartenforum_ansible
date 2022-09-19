@@ -6,26 +6,10 @@
 - hosts: all
   vars:
     hosts:
-      - name: tms
-        domain: tms-1.test.kartenforum.slub-dresden.de
-        dir: /srv/vk/tms/
-        vhost_template: 000-default
-      - name: tms
-        domain: tms-2.test.kartenforum.slub-dresden.de
-        dir: /srv/vk/tms/
-        vhost_template: 000-default
-      - name: thumbnail
-        domain: thumbnail.test.kartenforum.slub-dresden.de
-        dir: /srv/vk/thumbnails/
-        vhost_template: 000-default
-      - name: zoomify
-        domain: zoomify.test.kartenforum.slub-dresden.de
-        dir: /srv/vk/zoomify/
-        vhost_template: 000-default
-      - name: terrain
-        domain: terrain.test.kartenforum.slub-dresden.de
-        dir: /mnt/sdb1/terrain/mapzen/
-        vhost_template: 000-terrain
+      - name: place-search.kartenforum.slub-dresden.de
+        domain: place-search.kartenforum.slub-dresden.de
+      - name: sdvvk20rplace.slub-dresden.de
+        domain: sdvvk20rplace.slub-dresden.de
     certs:
       root: /etc/certs
       certificates:
@@ -40,4 +24,5 @@
         chain: /etc/certs/kartenforum.slub-dresden.de/chain.pem
         key: /etc/certs/kartenforum.slub-dresden.de/cert-key.key
   roles:
-    - apache-http-file-serving
+    - nominatim-service
+    - apache-http
