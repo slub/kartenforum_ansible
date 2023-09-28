@@ -9,3 +9,9 @@ CMD_BACKUP.md
 
 # Do not track all sql dump files
 vkdb-new.dump
+
+# Do not add any gz files to the repository
+*.tar.gz
+
+# Local yml files should also not be tracked
+*.local.yml
