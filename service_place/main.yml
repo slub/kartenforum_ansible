@@ -1,0 +1,28 @@
+# Created by jacob.mendt@pikobytes.de on 13.10.21
+#
+# This file is subject to the terms and conditions defined in file
+# "LICENSE", which is part of this source code package
+---
+- hosts: all
+  vars:
+    hosts:
+      - name: place-search.kartenforum.slub-dresden.de
+        domain: place-search.kartenforum.slub-dresden.de
+      - name: sdvvk20rplace.slub-dresden.de
+        domain: sdvvk20rplace.slub-dresden.de
+    certs:
+      root: /etc/certs
+      certificates:
+        - name: kartenforum.slub-dresden.de
+          cert: cert.pem
+          chain: chain.pem
+          key: cert-key.key
+    apache2:
+      admin_mail: info@pikobytes.de
+      cert:
+        cert: /etc/certs/kartenforum.slub-dresden.de/cert.pem
+        chain: /etc/certs/kartenforum.slub-dresden.de/chain.pem
+        key: /etc/certs/kartenforum.slub-dresden.de/cert-key.key
+  roles:
+    - nominatim-service
+    - apache-http

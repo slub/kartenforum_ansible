@@ -17,3 +17,6 @@ vkdb-new.dump
 # Local yml files should also not be tracked
 *.local.yml
 *.local
+
+# Do not track public key
+id_rsa_slub.pub
