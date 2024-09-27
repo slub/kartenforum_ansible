@@ -25,6 +25,7 @@
       - name: terrain
         domain: terrain.test.kartenforum.slub-dresden.de
         dir: /mnt/sdb1/terrain/mapzen/
+        dir_v2: /srv/vk/terrain_v2/
         vhost_template: 000-terrain
     certs:
       root: /etc/certs

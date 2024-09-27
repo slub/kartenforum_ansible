@@ -8,11 +8,27 @@
         Header always set Access-Control-Allow-Origin "*"
         Header always set Access-Control-Allow-Methods "GET"
 
+        # Serve requests to /v2 from {{ item.dir_v2 }} directory
+        Alias /v2 {{ item.dir_v2 }}
+        <Directory {{ item.dir_v2 }}>
+            Options +Indexes
+            AllowOverride None
+            Require all granted
+
+            # Set cache control headers for 30 days
+            Header set Cache-Control "max-age=2592000, public"
+            Header set Expires "access plus 30 days"
+        </Directory>
+
         <Directory {{ item.dir }}layer.json>
             Options +Indexes
             AllowOverride None
             Require all granted
             AddOutputFilterByType DEFLATE application/json
+
+            # Set cache control headers for 30 days
+            Header set Cache-Control "max-age=2592000, public"
+            Header set Expires "access plus 30 days"
         </Directory>
 
         <Directory {{ item.dir }}>
@@ -21,6 +37,10 @@
             Require all granted
             AddType application/octet-stream .terrain
             Header set Content-Encoding "gzip"
+
+            # Set cache control headers for 30 days
+            Header set Cache-Control "max-age=2592000, public"
+            Header set Expires "access plus 30 days"
         </Directory>
 
         # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
