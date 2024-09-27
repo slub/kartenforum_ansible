@@ -42,12 +42,7 @@ The services writes temporary and permanent georeference data, which it shares w
     </tr>    
     <tr>
         <td align="left">apache2.vhosts</td>
-        <td align="left">
-            <ul>
-                <li>geo.kartenforum.slub-dresden.de</li>
-                <li>geo.kartenforum.slub-dresden.de</li>
-            </ul>
-        </td>
+        <td align="left">geo.kartenforum.slub-dresden.de</td>
         <td align="left">
             Domain names under which the service should react on http and https.
         </td>    
@@ -218,12 +213,12 @@ The services writes temporary and permanent georeference data, which it shares w
     </tr>   
    <tr>
       <td align="left">service.templates.thumbnail_url</td>
-      <td align="left">https://thumbnail.test.kartenforum.slub-dresden.de/{}</td>
+      <td align="left">https://thumbnail.kartenforum.slub-dresden.de/{}</td>
       <td align="left">Template string which is used from the Python Code to generate the Thumbnail-Links. `{}` is an expression, which can be used from Python to resolve template strings.</td>
     </tr>   
    <tr>
       <td align="left">service.templates.zoomify_url</td>
-      <td align="left">https://zoomify.test.kartenforum.slub-dresden.de/{}/ImageProperties.xml</td>
+      <td align="left">https://zoomify.kartenforum.slub-dresden.de/{}/ImageProperties.xml</td>
       <td align="left">Template string which is used from the Python Code to generate the Zoomify-Links. `{}` is an expression, which can be used from Python to resolve template strings.</td>
     </tr>
     <tr>
