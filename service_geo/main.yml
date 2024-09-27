@@ -23,9 +23,6 @@
       vhosts:
         - geo.test.kartenforum.slub-dresden.de
         - sdvvk20testgeo.slub-dresden.de
-      basic_auth: True
-      basic_auth_user: set_your_own_user
-      basic_auth_password: set_your_own_password
     db:
       password: set_your_own_password
       name: vkdb

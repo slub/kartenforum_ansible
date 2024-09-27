@@ -1,0 +1,64 @@
+---
+# Define vars within the role
+- name: Setup configurations for this roles
+  set_fact:
+    path_docker_compose: "{{ service.root_path }}/docker-compose.yml"
+    path_entrypoints: "{{ service.root_path }}/entrypoints"
+    path_run_api: "{{ service.root_path }}/entrypoints/run-fastapi.sh"
+    path_run_daemon: "{{ service.root_path }}/entrypoints/run-job-loop.sh"
+
+# Tasks to do
+- name: Create working directory for georeference services/daemon
+  file:
+    path: "{{ service.root_path }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+  become: yes
+
+- name: Check if a georeference docker compose file exists
+  stat:
+    path: "{{ path_docker_compose }}"
+  register: docker_compose_status
+
+- name: Stop georeference service
+  command: "docker-compose -f {{ path_docker_compose }} down"
+  when: docker_compose_status.stat.exists
+
+- name: Copy docker-compose for georeferencer
+  template:
+    src: docker-compose.yml.j2
+    dest: "{{ path_docker_compose }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "u=rwx,g=rx,o=rx"
+
+- name: Pull latest images
+  command: "docker-compose -f {{ path_docker_compose }} pull"
+
+- name: Create entrypoints directory
+  file:
+    path: "{{ path_entrypoints }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+  become: yes
+
+- name: Copy entrypoint script run-fastapi.sh
+  copy:
+    src: "./files/run-fastapi.sh"
+    dest: "{{ path_run_api }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "u=rwx,g=rx,o=rx"
+
+- name: Copy entrypoint script run-fastapi.sh
+  copy:
+    src: "./files/run-job-loop.sh"
+    dest: "{{ path_run_daemon }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "u=rwx,g=rx,o=rx"
+
+- name: Start georeference service and daemon
+  command: "docker-compose -f {{ path_docker_compose }} up -d"

@@ -5,43 +5,27 @@
 #
 # Install of apache-http as a reverse proxy for the georeference service
 ---
-  # Make sure certificates are installed
-  - include_role:
-      name:
-        role: '../_roles/apache-certs'
-
-  # Make sure a clean apache http server is installed
-  - include_role:
-      name:
-        role: '../_roles/apache-clean-install'
-
-  # Make sure old vhost configurations are removed
-  - include_role:
-      name:
-        role: '../_roles/apache-clean-vhosts'
+#  # Make sure certificates are installed
+#  - include_role:
+#      name:
+#        role: '../_roles/apache-certs'
+#
+#  # Make sure a clean apache http server is installed
+#  - include_role:
+#      name:
+#        role: '../_roles/apache-clean-install'
+#
+#  # Make sure old vhost configurations are removed
+#  - include_role:
+#      name:
+#        role: '../_roles/apache-clean-vhosts'
 
 
   #
   # Setting up apache and the reverse proxy rules
   #
-  - name: Install apache2
-    apt:
-      name: [python3-passlib, libapache2-mod-proxy-uwsgi ]
-    become: yes
-
-  - name: Enable mod_proxy, mod_proxy_http, mod_headers, mod_proxy_uwsgi, mod_rewrite, mod_ssl
-    shell: a2enmod proxy proxy_http headers rewrite ssl proxy_uwsgi
-    become: yes
-
-  - name: Create password file
-    htpasswd:
-      path: /etc/apache2/.htpasswd
-      name: '{{ apache2.basic_auth_user }}'
-      password: '{{ apache2.basic_auth_password }}'
-      owner: root
-      group: www-data
-      mode: 0640
-    when: apache2.basic_auth == True
+  - name: Enable mod_proxy, mod_proxy_http, mod_headers, mod_rewrite, mod_ssl, mod_setenvif
+    shell: a2enmod proxy proxy_http headers rewrite ssl setenvif
     become: yes
 
   - name: Copy configurations to sites-available (http)

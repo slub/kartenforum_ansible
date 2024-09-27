@@ -1,0 +1,21 @@
+---
+- name: Install docker
+  package:
+    name: [docker.io, apparmor, docker, docker-compose, apparmor-utils, python3-docker]
+    state: latest
+  become: yes
+
+- name: Make sure user {{ ansible_user }} is within docker group
+  user:
+    name: "{{ ansible_user }}"
+    groups: sudo,docker
+    append: yes
+  become: yes
+
+- name: Restart docker service
+  shell: systemctl restart docker.service
+  become: yes
+
+- name: Restart containernd
+  shell: systemctl restart containerd.service
+  become: yes

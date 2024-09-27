@@ -9,29 +9,39 @@
         </Directory>
 
         # CORS support with preflight request
+    #RewriteEngine On
+    #RewriteCond %{REQUEST_METHOD} OPTIONS
+    #RewriteRule ^(.*)$ $1 [R=200,L]
+    #Header always set Access-Control-Allow-Headers  "Authorization,X-Requested-With,Accept,X-Auth-Token,Content-Length,Access-Control-Allow-Headers,Content-Type, Origin"
+    #Header always set Access-Control-Allow-Origin "*"
+    #Header always set Access-Control-Allow-Methods "POST, GET, OPTIONS, DELETE"
+
+    # ProxyPass for Georeference application
+    #ProxyRequests off
+    #ProxyPreserveHost On
+    <Location />
+        # Check if the Origin header is set and capture its value
+        SetEnvIf Origin "^http(s)?://(.+)$" ORIGIN=$0
+
+        # Set CORS headers
+        Header always set Access-Control-Allow-Headers  "Accept,Content-Length,Content-Type,Origin,Dev-Mode-Secret,Dev-Mode-Name"
+        Header always set Access-Control-Allow-Origin "%{ORIGIN}e" env=ORIGIN
+        Header always set Access-Control-Allow-Methods "POST, GET, OPTIONS, DELETE"
+        Header always set Access-Control-Allow-Credentials "true"
+
+        # Handle OPTIONS (preflight) requests
         RewriteEngine On
         RewriteCond %{REQUEST_METHOD} OPTIONS
         RewriteRule ^(.*)$ $1 [R=200,L]
-        Header always set Access-Control-Allow-Headers  "Authorization,X-Requested-With,Accept,X-Auth-Token,Content-Length,Access-Control-Allow-Headers,Content-Type, Origin"
-        Header always set Access-Control-Allow-Origin "*"
-        Header always set Access-Control-Allow-Methods "POST, GET, OPTIONS, DELETE"
 
-        # ProxyPass for Georeference application
-        ProxyRequests off
+        # Proxy to georeference_api
+        # ProxyRequests off
         ProxyPreserveHost On
-        <Location />
-            {% if True == apache2.basic_auth %}
-            AuthType Basic
-            AuthName "Restricted Content"
-            AuthUserFile /etc/apache2/.htpasswd
-            Require valid-user
-            {% endif %}
-
-            ProxyPass uwsgi://127.0.0.1:6542/
-            ProxyPassReverse uwsgi://127.0.0.1:6542/
-            Order allow,deny
-            Allow from all
-        </Location>
+        ProxyPass http://localhost:8000/
+        ProxyPassReverse http://localhost:8000/
+        #Order allow,deny
+        #Allow from all
+    </Location>
 
         # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
         # error, crit, alert, emerg.
