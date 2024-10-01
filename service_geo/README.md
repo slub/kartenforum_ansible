@@ -225,6 +225,16 @@ The services writes temporary and permanent georeference data, which it shares w
       <td align="left">service.typo3_url</td>
       <td align="left">https://kartenforum.slub-dresden.de/</td>
       <td align="left">Root URL of the TYPO3 Kartenforum-Client. This is needed for proper authentification support of the FastAPI.</td>
+    </tr>
+    <tr>
+      <td align="left">service.sentry_dsn</td>
+      <td align="left">https://{url-to-some-sentry-project}</td>
+      <td align="left">If this parameter is set, the FastAPI and Daemon will send error logs and heartbeats to sentry instance.</td>
+    </tr> 
+    <tr>
+      <td align="left">service.sentry_environment</td>
+      <td align="left">Could be an environment value, e.g. "staging" or "production"</td>
+      <td align="left">Environment of the system send to sentry.</td>
     </tr> 
     <!-- Section backup -->
     <tr>
@@ -265,6 +275,7 @@ Furthermore, it is recommended to back up the following directories regularly, a
 ### GDPR
 * Within the database there are userids stored. If these are appropriately speaking, they can allow a conclusion to be drawn about individual users. They are also published on the portal as part of the ranking.
 * The service collects ip addresses through the apache access log file. This information is only used for debugging reasons and can be deleted via clearing the Apache log files.
+* If `sentry_dsn` is configured, it is possible, that IP addresses are send to the configured sentry instance. 
 
 ### Troubleshooting
 

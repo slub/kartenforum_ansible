@@ -1,0 +1,37 @@
+# Created by jacob.mendt@pikobytes.de on 13.10.21
+#
+# This file is subject to the terms and conditions defined in file
+# "LICENSE", which is part of this source code package
+#
+# Install of apache-http as a reverse proxy for the georeference service
+---
+
+
+
+  #
+  # Setting up apache and the reverse proxy rules
+  #
+#  - name: Enable mod_proxy, mod_proxy_http, mod_headers, mod_rewrite, mod_ssl, mod_setenvif
+#    shell: a2enmod proxy proxy_http headers rewrite ssl setenvif
+#    become: yes
+
+  - name: Copy configurations to sites-available (http)
+    template:
+      src: 000-default.conf.j2
+      dest: "/etc/apache2/sites-available/{{ terrain_test.domain }}.conf"
+    become: yes
+
+  - name: Copy configurations to sites-available (https)
+    template:
+      src: 000-default-ssl.conf.j2
+      dest: "/etc/apache2/sites-available/{{ terrain_test.domain }}-ssl.conf"
+    become: yes
+
+  - name: Enable apache sites
+    shell:
+      cmd: "a2ensite {{ terrain_test.domain }} {{ terrain_test.domain }}-ssl"
+    become: yes
+
+  - name: Restart apache2
+    shell: systemctl restart apache2
+    become: yes

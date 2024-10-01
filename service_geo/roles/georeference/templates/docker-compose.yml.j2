@@ -34,6 +34,9 @@ services:
       - CORS_ENABLED=False
       # TYPO3 URL
       - TYPO3_URL={{ service.typo3_url }}
+      # Configuration for the sentry
+      - SENTRY_DSN={{ service.sentry_dsn }}
+      - SENTRY_ENVIRONMENT={{ service.sentry_environment }}
     volumes:
       - {{ storage.root_path }}:{{ storage.root_path }}
       - {{ service.root_path }}/entrypoints/run-fastapi.sh:/entrypoints/run-fastapi.sh
@@ -77,6 +80,9 @@ services:
       #- DAEMON_LOGFILE_PATH=/opt/kartenforum_georeference/logs/daemon.log
       - DAEMON_WAIT_ON_STARTUP=30
       - DAEMON_SLEEP_TIME=60
+      # Sentry settings
+      - SENTRY_DSN={{ service.sentry_dsn }}
+      - SENTRY_ENVIRONMENT={{ service.sentry_environment }}
     volumes:
       - {{ storage.root_path }}:{{ storage.root_path }}
       - {{ service.root_path }}/entrypoints/run-job-loop.sh:/entrypoints/run-job-loop.sh

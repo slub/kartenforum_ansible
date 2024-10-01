@@ -66,6 +66,8 @@
         thumbnail_url: "https://thumbnail.kartenforum.slub-dresden.de/{}"
         zoomify_url: "https://zoomify.kartenforum.slub-dresden.de/{}/ImageProperties.xml"
       typo3_url: https://kartenforum.slub-dresden.de
+      sentry_dsn:
+      sentry_environment: staging
     backup:
       data_path: /srv/vk/backup/data
       script_path: /srv/vk/backup/scripts
