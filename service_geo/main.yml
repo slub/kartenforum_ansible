@@ -21,38 +21,20 @@
         chain: /etc/certs/kartenforum.slub-dresden.de/chain.pem
         key: /etc/certs/kartenforum.slub-dresden.de/cert-key.key
       vhosts:
-        - geo.test.kartenforum.slub-dresden.de
-        - sdvvk20testgeo.slub-dresden.de
-      basic_auth: True
-      basic_auth_user: set_your_own_user
-      basic_auth_password: set_your_own_password
+        - geo.kartenforum.slub-dresden.de
     db:
       password: set_your_own_password
       name: vkdb
       user: vk20
+      host: localhost # used for the database connection
+      port: 5432 # used for the database connection
       restore_database: False
       dump: vkdb-new.dump
-    service:
-      root_path: /opt/kartenforum_georeference
-      git_repo:
-        url: https://github.com/slub/kartenforum_georeference
-        branch: main
-      use_git_repo: True
-      settings:
-        global_permalink_resolver: http://digital.slub-dresden.de/
-        template_links_tms:
-          - https://tms-1.test.kartenforum.slub-dresden.de/{}
-          - https://tms-2.test.kartenforum.slub-dresden.de/{}
-        template_link_wms: https://wms.test.kartenforum.slub-dresden.de/map/{}
-        template_link_wms_transform: https://wms-transform.test.kartenforum.slub-dresden.de/map/{}
-        template_link_wcs: https://wcs.test.kartenforum.slub-dresden.de/map/{}
-        template_link_thumbnail: https://thumbnail.test.kartenforum.slub-dresden.de/{}
-        template_link_zoomify: https://zoomify.test.kartenforum.slub-dresden.de/{}/ImageProperties.xml
     search:
-      domain: search.test.kartenforum.slub-dresden.de
+      domain: search.kartenforum.slub-dresden.de
       port: 443
       ssl: True
-      username: elastic
+      username: set_your_own_username
       password: set_your_own_password
     storage:
       root_path: /srv/vk
@@ -64,11 +46,28 @@
         mapfile_root: /srv/vk/map_services
         mapfile_tmp_root: /srv/vk/map_services_tmp
         mosaic_root: /srv/vk/mosaics
-        daemon_tmp: /srv/vk/daemon_tmp
         thumbnail_root: /srv/vk/thumbnails
         zoomify_root: /srv/vk/zoomify
         upload_tmp: /srv/vk/upload_tmp
       check_permissions: False
+    service:
+      docker_image_name: pikobyteshq/slub_kartenforum_georeference:latest
+      root_path: /opt/kartenforum_georeference
+      dev_mode: False
+      dev_mode_secret:
+      log_level: INFO
+      templates:
+        tms_urls:
+          - "https://tms-1.kartenforum.slub-dresden.de/{}"
+          - "https://tms-2.kartenforum.slub-dresden.de/{}"
+        wms_url: "https://wms.kartenforum.slub-dresden.de/map/{}"
+        wms_transform_url: "https://wms-transform.kartenforum.slub-dresden.de/map/{}"
+        wcs_url: "https://wcs.kartenforum.slub-dresden.de/map/{}"
+        thumbnail_url: "https://thumbnail.kartenforum.slub-dresden.de/{}"
+        zoomify_url: "https://zoomify.kartenforum.slub-dresden.de/{}/ImageProperties.xml"
+      typo3_url: https://kartenforum.slub-dresden.de
+      sentry_dsn:
+      sentry_environment: staging
     backup:
       data_path: /srv/vk/backup/data
       script_path: /srv/vk/backup/scripts

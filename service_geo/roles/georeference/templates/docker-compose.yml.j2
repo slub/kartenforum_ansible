@@ -1,0 +1,104 @@
+version: '3'
+services:
+  georeference_api:
+    image: {{ service.docker_image_name }}
+    container_name: kartenforum_georeference_api
+    restart: always
+    environment:
+      # Database configuration
+      - POSTGRES_USER={{ db.user }}
+      - POSTGRES_PASSWORD={{ db.password }}
+      - POSTGRES_DB={{ db.name }}
+      - POSTGRES_HOST={{ db.host }}
+      - POSTGRES_PORT={{ db.port }}
+      # Elasticsearch configuration
+      - ES_HOST={{ search.domain }}
+      - ES_PORT={{ search.port }}
+      - ES_USERNAME={{ search.username }}
+      - ES_PASSWORD={{ search.password }}
+      - ES_SSL={{ search.ssl }}
+      # Dev settings
+      - DEV_MODE={{ service.dev_mode }}
+      - DEV_MODE_SECRET={{ service.dev_mode_secret }}
+      - LOG_LEVEL={{ service.log_level }}
+      # Template URLs
+      - TEMPLATE_TMS_URLS=[{% for item in service.templates.tms_urls %}"{{ item }}"{% if not loop.last %},{% endif %}{% endfor %}]
+      - TEMPLATE_WMS_URL={{ service.templates.wms_url }}
+      - TEMPLATE_WMS_TRANSFORM_URL={{ service.templates.wms_transform_url }}
+      - TEMPLATE_WCS_URL={{ service.templates.wcs_url }}
+      - TEMPLATE_THUMBNAIL_URL={{ service.templates.thumbnail_url }}
+      - TEMPLATE_ZOOMIFY_URL={{ service.templates.zoomify_url }}
+      # We need to overwrite PATH_DATA_ROOT to use the mounted data
+      - PATH_DATA_ROOT={{ storage.root_path }}
+      # Disable CORS, because it should be handled by the reverse proxy
+      - CORS_ENABLED=False
+      # TYPO3 URL
+      - TYPO3_URL={{ service.typo3_url }}
+      # Configuration for the sentry
+      - SENTRY_DSN={{ service.sentry_dsn }}
+      - SENTRY_ENVIRONMENT={{ service.sentry_environment }}
+    volumes:
+      - {{ storage.root_path }}:{{ storage.root_path }}
+      - {{ service.root_path }}/entrypoints/run-fastapi.sh:/entrypoints/run-fastapi.sh
+    ports:
+      - "8000:8000"
+    entrypoint: /entrypoints/run-fastapi.sh
+    # TODO: I do not like using this network mode. But so far, I did not find a working setup
+    #       which allows the container to access the database on the host machine, without
+    #       further changing the setup
+    network_mode: "host"
+
+  georeference_daemon:
+    image: {{ service.docker_image_name }}
+    container_name: kartenforum_georeference_daemon
+    environment:
+      # Database configuration
+      - POSTGRES_USER={{ db.user }}
+      - POSTGRES_PASSWORD={{ db.password }}
+      - POSTGRES_DB={{ db.name }}
+      - POSTGRES_HOST={{ db.host }}
+      - POSTGRES_PORT={{ db.port }}
+      # Elasticsearch configuration
+      - ES_HOST={{ search.domain }}
+      - ES_PORT={{ search.port }}
+      - ES_USERNAME={{ search.username }}
+      - ES_PASSWORD={{ search.password }}
+      - ES_SSL={{ search.ssl }}
+      # Dev settings
+      - DEV_MODE={{ service.dev_mode }}
+      - LOG_LEVEL={{ service.log_level }}
+      # Template URLs
+      - TEMPLATE_TMS_URLS=[{% for item in service.templates.tms_urls %}"{{ item }}"{% if not loop.last %},{% endif %}{% endfor %}]
+      - TEMPLATE_WMS_URL={{ service.templates.wms_url }}
+      - TEMPLATE_WMS_TRANSFORM_URL={{ service.templates.wms_transform_url }}
+      - TEMPLATE_WCS_URL={{ service.templates.wcs_url }}
+      - TEMPLATE_THUMBNAIL_URL={{ service.templates.thumbnail_url }}
+      - TEMPLATE_ZOOMIFY_URL={{ service.templates.zoomify_url }}
+      # We need to overwrite PATH_DATA_ROOT to use the mounted data
+      - PATH_DATA_ROOT={{ storage.root_path }}
+      # Daemon settings
+      #- DAEMON_LOGFILE_PATH=/opt/kartenforum_georeference/logs/daemon.log
+      - DAEMON_WAIT_ON_STARTUP=30
+      - DAEMON_SLEEP_TIME=60
+      # Sentry settings
+      - SENTRY_DSN={{ service.sentry_dsn }}
+      - SENTRY_ENVIRONMENT={{ service.sentry_environment }}
+    volumes:
+      - {{ storage.root_path }}:{{ storage.root_path }}
+      - {{ service.root_path }}/entrypoints/run-job-loop.sh:/entrypoints/run-job-loop.sh
+      - {{ service.root_path }}/logs:/opt/kartenforum_georeference/logs
+    entrypoint: /entrypoints/run-job-loop.sh
+    # TODO: I do not like using this network mode. But so far, I did not find a working setup
+    #       which allows the container to access the database on the host machine, without
+    #       further changing the setup
+    network_mode: "host"
+
+#  extra_hosts:
+#    - "localhost:127.17.0.1"
+#    -
+#    networks:
+#      - georeference_network
+#
+#networks:
+#  georeference_network:
+#    driver: bridge

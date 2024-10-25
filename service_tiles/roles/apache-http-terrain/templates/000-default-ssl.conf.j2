@@ -1,17 +1,46 @@
 <IfModule mod_ssl.c>
-    <VirtualHost {{ item.domain }}:443>
-        ServerName {{ item.domain }}
+    <VirtualHost {{ terrain_test.domain }}:443>
+        ServerName {{ terrain_test.domain }}
         ServerAdmin {{ apache2.admin_mail }}
-        DocumentRoot {{ item.dir }}
+        DocumentRoot {{ terrain_test.dir }}
 
         # Header always set Access-Control-Allow-Headers  "Authorization,X-Requested-With,Accept,X-Auth-Token,Content-Length,Access-Control-Allow-Headers,Content-Type, Origin"
         Header always set Access-Control-Allow-Origin "*"
         Header always set Access-Control-Allow-Methods "GET"
 
-        <Directory {{ item.dir }}>
+        # Serve requests to /v2 from {{ terrain_test.dir_v2 }} directory
+        Alias /v2 {{ terrain_test.dir_v2 }}
+        <Directory {{ terrain_test.dir_v2 }}>
             Options +Indexes
             AllowOverride None
             Require all granted
+
+            # Set cache control headers for 30 days
+            Header set Cache-Control "max-age=2592000, public"
+            Header set Expires "access plus 30 days"
+        </Directory>
+
+        <Directory {{ terrain_test.dir }}layer.json>
+            Options +Indexes
+            AllowOverride None
+            Require all granted
+            AddOutputFilterByType DEFLATE application/json
+
+            # Set cache control headers for 30 days
+            Header set Cache-Control "max-age=2592000, public"
+            Header set Expires "access plus 30 days"
+        </Directory>
+
+        <Directory {{ terrain_test.dir }}>
+            Options +Indexes
+            AllowOverride None
+            Require all granted
+            AddType application/octet-stream .terrain
+            Header set Content-Encoding "gzip"
+
+            # Set cache control headers for 30 days
+            Header set Cache-Control "max-age=2592000, public"
+            Header set Expires "access plus 30 days"
         </Directory>
 
         # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,

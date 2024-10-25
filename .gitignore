@@ -6,6 +6,7 @@
 *.pem
 *.key
 CMD_BACKUP.md
+LOCAL.md
 
 # Do not track all sql dump files
 vkdb-new.dump
@@ -15,3 +16,7 @@ vkdb-new.dump
 
 # Local yml files should also not be tracked
 *.local.yml
+*.local
+
+# Do not track public key
+id_rsa_slub.pub

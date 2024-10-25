@@ -1,5 +1,5 @@
-<VirtualHost {{ item.domain }}:80>
-	ServerName {{ item.domain }}
+<VirtualHost {{ terrain_test.domain }}:80>
+	ServerName {{ terrain_test.domain }}
 	ServerAdmin {{ apache2.admin_mail }}
 
     # Redirect all requests to HTTPS

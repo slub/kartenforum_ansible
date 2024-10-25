@@ -1,0 +1,31 @@
+---
+- name: Mirror docker user to host and update the directory permissions
+  user:
+    name: kartenforum_docker
+    uid: 5001
+    groups: "{{ ansible_user }}"
+    append: yes
+    state: present
+  become: yes
+
+- name: Make sure the storage directories exists
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+  with_items:
+    - "{{ storage.directories.values() }}"
+  become: yes
+
+- name: Check permissions for the storage directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "kartenforum_docker"
+    mode: "u=rwx,g=rwx,o=rx"
+    recurse: True
+  with_items:
+    - "{{ storage.directories.values() }}"
+  become: yes
+  when: storage.check_permissions == True
