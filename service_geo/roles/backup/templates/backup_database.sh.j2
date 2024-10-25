@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MAILTO="alexander.bigga@slub-dresden.de"
+MAILTO="jan.zumpe@slub-dresden.de"
 
 # Create database backups
 PGPASSWORD="{{ db.password }}" /usr/bin/pg_dump --inserts --column-inserts -h localhost -U {{ db.user }} {{ db.name }} > {{ backup.data_path }}/{{ db.name }}_last.backup

@@ -35,3 +35,18 @@
       minute: "10"
       hour: "0"
       job: "{{ backup.script_path }}/backup_database.sh"
+
+  # Copy and enable cleanup script for the database
+  - template:
+      src: clear_tmp_files.sh.j2
+      dest: "{{ service.root_path }}/clear_tmp_files.sh"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      mode: "u=rwx,g=rwx,o=r"
+
+  - name: Enable clear_tmp_files.sh as cronjob
+    cron:
+      name: "Clean up tmp files"
+      minute: "*/5"
+      hour: "0"
+      job: "{{ service.root_path }}/clear_tmp_files.sh"

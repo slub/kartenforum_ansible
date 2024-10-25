@@ -49,7 +49,7 @@
         thumbnail_root: /srv/vk/thumbnails
         zoomify_root: /srv/vk/zoomify
         upload_tmp: /srv/vk/upload_tmp
-      check_permissions: False
+      check_permissions: True
     service:
       docker_image_name: pikobyteshq/slub_kartenforum_georeference:latest
       root_path: /opt/kartenforum_georeference
@@ -72,8 +72,8 @@
       data_path: /srv/vk/backup/data
       script_path: /srv/vk/backup/scripts
   roles:
-    - postgresql
-    - import-database
+#    - postgresql
+#    - import-database
     - georeference
-    - apache-http
-    - backup
+#    - apache-http
+#    - backup

@@ -40,8 +40,6 @@ services:
     volumes:
       - {{ storage.root_path }}:{{ storage.root_path }}
       - {{ service.root_path }}/entrypoints/run-fastapi.sh:/entrypoints/run-fastapi.sh
-    ports:
-      - "8000:8000"
     entrypoint: /entrypoints/run-fastapi.sh
     # TODO: I do not like using this network mode. But so far, I did not find a working setup
     #       which allows the container to access the database on the host machine, without
@@ -92,13 +90,3 @@ services:
     #       which allows the container to access the database on the host machine, without
     #       further changing the setup
     network_mode: "host"
-
-#  extra_hosts:
-#    - "localhost:127.17.0.1"
-#    -
-#    networks:
-#      - georeference_network
-#
-#networks:
-#  georeference_network:
-#    driver: bridge
