@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Remove temporary georeference files which are older than 30 mins
+
+MAILTO="jan.zumpe@slub-dresden.de"
+
+/usr/bin/find {{ storage.directories.tmp_root }}/*.map -type f -mmin +30 2>/dev/null | xargs rm 2>/dev/null
+/usr/bin/find {{ storage.directories.tmp_root }}/*.tif -type f -mmin +30 2>/dev/null | xargs rm 2>/dev/null
+/usr/bin/find {{ storage.directories.tmp_root }}/*.vrt -type f -mmin +30 2>/dev/null | xargs rm 2>/dev/null
+/usr/bin/find {{ storage.directories.tmp_root }}/*.geojson -type f -mmin +30 2>/dev/null | xargs rm 2>/dev/null
+/usr/bin/find {{ storage.directories.mapfile_tmp_root }}/*.map -type f -mmin +30 2>/dev/null | xargs rm 2>/dev/null
+/usr/bin/find {{ storage.directories.mapfile_tmp_root }}/*.tif -type f -mmin +30 2>/dev/null | xargs rm 2>/dev/null
+/usr/bin/find {{ storage.directories.mapfile_tmp_root }}/*.vrt -type f -mmin +30 2>/dev/null | xargs rm 2>/dev/null
+/usr/bin/find {{ storage.directories.mapfile_tmp_root }}/*.geojson -type f -mmin +30 2>/dev/null | xargs rm 2>/dev/null
+/usr/bin/find {{ storage.directories.upload_tmp }}/*.tif -type f -mmin +30 2>/dev/null | xargs rm 2>/dev/null
