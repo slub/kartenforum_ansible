@@ -49,6 +49,7 @@
         thumbnail_root: /srv/vk/thumbnails
         zoomify_root: /srv/vk/zoomify
         upload_tmp: /srv/vk/upload_tmp
+        external_geojson_root: /srv/vk/external_geojson
       check_permissions: False
     service:
       docker_image_name: pikobyteshq/slub_kartenforum_georeference:latest

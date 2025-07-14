@@ -8,6 +8,22 @@
             Require all denied
         </Directory>
 
+        Alias /geojson {{ storage.external_geojson_root }}
+        <Directory {{ storage.external_geojson_root }}>
+            Options -Indexes -ExecCGI -Includes +SymLinksIfOwnerMatch
+            AllowOverride None
+            Require all denied
+
+            <FilesMatch \.json$>
+                Require all granted
+                SetHandler application/json
+
+                <LimitExcept GET HEAD>
+                    Require all denied
+                </LimitExcept>
+            </FilesMatch>
+        </Directory>
+
         <Location />
             # Check if the Origin header is set and capture its value
             SetEnvIf Origin "^http(s)?://(.+)$" ORIGIN=$0
@@ -30,6 +46,11 @@
             ProxyPassReverse http://localhost:8000/
             #Order allow,deny
             #Allow from all
+        </Location>
+
+        <Location /geojson>
+            # Serve static files via alias/directory
+            ProxyPass !
         </Location>
 
         # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,

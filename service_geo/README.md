@@ -159,7 +159,12 @@ The services writes temporary and permanent georeference data, which it shares w
       <td align="left">storage.directories.zoomify_root</td>
       <td align="left">/srv/vk/zoomify</td>
       <td align="left">Directory in which zoomify tiles are placed.</td>
-    </tr> 
+    </tr>
+    <tr>
+      <td align="left">storage.directories.external_geojson_root</td>
+      <td align="left">/srv/vk/external_geojson</td>
+      <td align="left">Directory in which the geojson files for external vector maps are stored.</td>
+    </tr>
     <tr>
       <td align="left">storage.directories.upload_tmp</td>
       <td align="left">/srv/vk/upload_tmp</td>
