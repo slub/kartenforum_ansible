@@ -5,20 +5,20 @@
 #
 # Install of apache-http as a reverse proxy for the georeference service
 ---
-#  # Make sure certificates are installed
-#  - include_role:
-#      name:
-#        role: '../_roles/apache-certs'
-#
-#  # Make sure a clean apache http server is installed
-#  - include_role:
-#      name:
-#        role: '../_roles/apache-clean-install'
-#
-#  # Make sure old vhost configurations are removed
-#  - include_role:
-#      name:
-#        role: '../_roles/apache-clean-vhosts'
+  # Make sure certificates are installed
+  - include_role:
+      name:
+        role: '../_roles/apache-certs'
+
+  # Make sure a clean apache http server is installed
+  - include_role:
+      name:
+        role: '../_roles/apache-clean-install'
+
+  # Make sure old vhost configurations are removed
+  - include_role:
+      name:
+        role: '../_roles/apache-clean-vhosts'
 
 
   #

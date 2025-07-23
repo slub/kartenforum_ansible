@@ -37,11 +37,12 @@ services:
       # Configuration for the sentry
       - SENTRY_DSN={{ service.sentry_dsn }}
       - SENTRY_ENVIRONMENT={{ service.sentry_environment }}
+      # Log file
+      - API_LOGFILE_PATH=/var/log/kartenforum_georeference/api.log
     volumes:
       - {{ storage.root_path }}:{{ storage.root_path }}
       - {{ service.root_path }}/entrypoints/run-fastapi.sh:/entrypoints/run-fastapi.sh
-    ports:
-      - "8000:8000"
+      - /var/log/kartenforum_georeference:/var/log/kartenforum_georeference
     entrypoint: /entrypoints/run-fastapi.sh
     # TODO: I do not like using this network mode. But so far, I did not find a working setup
     #       which allows the container to access the database on the host machine, without
@@ -83,22 +84,14 @@ services:
       # Sentry settings
       - SENTRY_DSN={{ service.sentry_dsn }}
       - SENTRY_ENVIRONMENT={{ service.sentry_environment }}
+      # Log file
+      - DAEMON_LOGFILE_PATH=/var/log/kartenforum_georeference/daemon.log
     volumes:
       - {{ storage.root_path }}:{{ storage.root_path }}
       - {{ service.root_path }}/entrypoints/run-job-loop.sh:/entrypoints/run-job-loop.sh
-      - {{ service.root_path }}/logs:/opt/kartenforum_georeference/logs
+      - /var/log/kartenforum_georeference:/var/log/kartenforum_georeference
     entrypoint: /entrypoints/run-job-loop.sh
     # TODO: I do not like using this network mode. But so far, I did not find a working setup
     #       which allows the container to access the database on the host machine, without
     #       further changing the setup
     network_mode: "host"
-
-#  extra_hosts:
-#    - "localhost:127.17.0.1"
-#    -
-#    networks:
-#      - georeference_network
-#
-#networks:
-#  georeference_network:
-#    driver: bridge

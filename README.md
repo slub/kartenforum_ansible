@@ -92,7 +92,7 @@ System requirements:
 The service hosts the georeferencing service used by the web application and the daemon that synchronizes the search index entries and the maps and images services. 
 
 System requirements:
-* Debian 101
+* Debian 12
 * 40 GB Storage
 * 8 vCPU
 * 16 GB RAM

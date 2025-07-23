@@ -60,5 +60,15 @@
     group: "{{ ansible_user }}"
     mode: "u=rwx,g=rx,o=rx"
 
+# Tasks to do
+- name: Create log file directory
+  file:
+    path: "/var/log/kartenforum_georeference"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "kartenforum_docker"
+    mode: u+rwx,g-rwx,o-r
+  become: yes
+
 - name: Start georeference service and daemon
   command: "docker-compose -f {{ path_docker_compose }} up -d"
